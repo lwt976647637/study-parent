@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dxt.third.core.dao.ProductMapper" >
+  <resultMap id="BaseResultMap" type="com.dxt.third.core.entity.Product" >
+    <constructor >
+      <idArg column="id" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="order_no" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="product_id" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="product_name" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="product_price" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="product_serial" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="product_number" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="remark" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, order_no, product_id, product_name, product_price, product_serial, product_number, 
+    remark, create_time, update_time
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.dxt.third.core.entity.ProductExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_dxt_sale_product
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_dxt_sale_product
+    where id = #{id,jdbcType=NVARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_dxt_sale_product
+    where id = #{id,jdbcType=NVARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.dxt.third.core.entity.ProductExample" >
+    delete from t_dxt_sale_product
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.dxt.third.core.entity.Product" >
+    insert into t_dxt_sale_product (id, order_no, product_id, 
+      product_name, product_price, product_serial, 
+      product_number, remark, create_time, 
+      update_time)
+    values (#{id,jdbcType=NVARCHAR}, #{orderNo,jdbcType=NVARCHAR}, #{productId,jdbcType=NVARCHAR}, 
+      #{productName,jdbcType=NVARCHAR}, #{productPrice,jdbcType=NVARCHAR}, #{productSerial,jdbcType=NVARCHAR}, 
+      #{productNumber,jdbcType=INTEGER}, #{remark,jdbcType=NVARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.dxt.third.core.entity.Product" >
+    insert into t_dxt_sale_product
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="productId != null" >
+        product_id,
+      </if>
+      <if test="productName != null" >
+        product_name,
+      </if>
+      <if test="productPrice != null" >
+        product_price,
+      </if>
+      <if test="productSerial != null" >
+        product_serial,
+      </if>
+      <if test="productNumber != null" >
+        product_number,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=NVARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=NVARCHAR},
+      </if>
+      <if test="productId != null" >
+        #{productId,jdbcType=NVARCHAR},
+      </if>
+      <if test="productName != null" >
+        #{productName,jdbcType=NVARCHAR},
+      </if>
+      <if test="productPrice != null" >
+        #{productPrice,jdbcType=NVARCHAR},
+      </if>
+      <if test="productSerial != null" >
+        #{productSerial,jdbcType=NVARCHAR},
+      </if>
+      <if test="productNumber != null" >
+        #{productNumber,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=NVARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.dxt.third.core.entity.ProductExample" resultType="java.lang.Integer" >
+    select count(*) from t_dxt_sale_product
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_dxt_sale_product
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.orderNo != null" >
+        order_no = #{record.orderNo,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.productId != null" >
+        product_id = #{record.productId,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.productName != null" >
+        product_name = #{record.productName,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.productPrice != null" >
+        product_price = #{record.productPrice,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.productSerial != null" >
+        product_serial = #{record.productSerial,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.productNumber != null" >
+        product_number = #{record.productNumber,jdbcType=INTEGER},
+      </if>
+      <if test="record.remark != null" >
+        remark = #{record.remark,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_dxt_sale_product
+    set id = #{record.id,jdbcType=NVARCHAR},
+      order_no = #{record.orderNo,jdbcType=NVARCHAR},
+      product_id = #{record.productId,jdbcType=NVARCHAR},
+      product_name = #{record.productName,jdbcType=NVARCHAR},
+      product_price = #{record.productPrice,jdbcType=NVARCHAR},
+      product_serial = #{record.productSerial,jdbcType=NVARCHAR},
+      product_number = #{record.productNumber,jdbcType=INTEGER},
+      remark = #{record.remark,jdbcType=NVARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dxt.third.core.entity.Product" >
+    update t_dxt_sale_product
+    <set >
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=NVARCHAR},
+      </if>
+      <if test="productId != null" >
+        product_id = #{productId,jdbcType=NVARCHAR},
+      </if>
+      <if test="productName != null" >
+        product_name = #{productName,jdbcType=NVARCHAR},
+      </if>
+      <if test="productPrice != null" >
+        product_price = #{productPrice,jdbcType=NVARCHAR},
+      </if>
+      <if test="productSerial != null" >
+        product_serial = #{productSerial,jdbcType=NVARCHAR},
+      </if>
+      <if test="productNumber != null" >
+        product_number = #{productNumber,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=NVARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=NVARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dxt.third.core.entity.Product" >
+    update t_dxt_sale_product
+    set order_no = #{orderNo,jdbcType=NVARCHAR},
+      product_id = #{productId,jdbcType=NVARCHAR},
+      product_name = #{productName,jdbcType=NVARCHAR},
+      product_price = #{productPrice,jdbcType=NVARCHAR},
+      product_serial = #{productSerial,jdbcType=NVARCHAR},
+      product_number = #{productNumber,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=NVARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=NVARCHAR}
+  </update>
+</mapper>

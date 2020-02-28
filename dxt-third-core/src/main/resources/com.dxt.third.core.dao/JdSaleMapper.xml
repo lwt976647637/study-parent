@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dxt.third.core.dao.JdSaleMapper" >
+  <resultMap id="BaseResultMap" type="com.dxt.third.core.entity.JdSale" >
+    <constructor >
+      <arg column="AccountID" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="SaleID" jdbcType="DECIMAL" javaType="java.lang.Long" />
+      <arg column="SaleDate" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="Store" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="User" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="User1" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="Custom" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="SaleTotal" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="StoreTotal" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="SaleOK" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="type" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="MoneyType" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="MainMemo" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="MainMemoEx" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="InsertSerial" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="ProductID" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="ProductName" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="ProductPrice" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="ProductNumber" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="ProductTotal" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="ProductStorePrice" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="CostMethod" jdbcType="SMALLINT" javaType="java.lang.Short" />
+      <arg column="IsTaxPrint" jdbcType="SMALLINT" javaType="java.lang.Short" />
+      <arg column="Memo1" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="Memo2" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="Memo3" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="PayType" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="TaxRate" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="orgid" jdbcType="INTEGER" javaType="java.lang.Integer" />
+    </constructor>
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    AccountID, SaleID, SaleDate, Store, User, User1, Custom, SaleTotal, StoreTotal, SaleOK, 
+    type, MoneyType, MainMemo, MainMemoEx, InsertSerial, ProductID, ProductName, ProductPrice, 
+    ProductNumber, ProductTotal, ProductStorePrice, CostMethod, IsTaxPrint, Memo1, Memo2, 
+    Memo3, PayType, TaxRate, orgid
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.dxt.third.core.entity.JdSaleExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from jd_gtsale
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.dxt.third.core.entity.JdSaleExample" >
+    delete from jd_gtsale
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.dxt.third.core.entity.JdSale" >
+    insert into jd_gtsale (AccountID, SaleID, SaleDate, 
+      Store, User, User1, 
+      Custom, SaleTotal, StoreTotal, 
+      SaleOK, type, MoneyType, 
+      MainMemo, MainMemoEx, InsertSerial, 
+      ProductID, ProductName, ProductPrice, 
+      ProductNumber, ProductTotal, ProductStorePrice, 
+      CostMethod, IsTaxPrint, Memo1, 
+      Memo2, Memo3, PayType, 
+      TaxRate, orgid)
+    values (#{accountid,jdbcType=INTEGER}, #{saleid,jdbcType=DECIMAL}, #{saledate,jdbcType=TIMESTAMP}, 
+      #{store,jdbcType=INTEGER}, #{user,jdbcType=NVARCHAR}, #{user1,jdbcType=NVARCHAR}, 
+      #{custom,jdbcType=NVARCHAR}, #{saletotal,jdbcType=DECIMAL}, #{storetotal,jdbcType=DECIMAL}, 
+      #{saleok,jdbcType=INTEGER}, #{type,jdbcType=NVARCHAR}, #{moneytype,jdbcType=INTEGER}, 
+      #{mainmemo,jdbcType=NVARCHAR}, #{mainmemoex,jdbcType=NVARCHAR}, #{insertserial,jdbcType=INTEGER}, 
+      #{productid,jdbcType=NVARCHAR}, #{productname,jdbcType=NVARCHAR}, #{productprice,jdbcType=DECIMAL}, 
+      #{productnumber,jdbcType=DECIMAL}, #{producttotal,jdbcType=DECIMAL}, #{productstoreprice,jdbcType=DECIMAL}, 
+      #{costmethod,jdbcType=SMALLINT}, #{istaxprint,jdbcType=SMALLINT}, #{memo1,jdbcType=NVARCHAR}, 
+      #{memo2,jdbcType=NVARCHAR}, #{memo3,jdbcType=NVARCHAR}, #{paytype,jdbcType=VARCHAR}, 
+      #{taxrate,jdbcType=DECIMAL}, #{orgid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.dxt.third.core.entity.JdSale" >
+    insert into jd_gtsale
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="accountid != null" >
+        AccountID,
+      </if>
+      <if test="saleid != null" >
+        SaleID,
+      </if>
+      <if test="saledate != null" >
+        SaleDate,
+      </if>
+      <if test="store != null" >
+        Store,
+      </if>
+      <if test="user != null" >
+        User,
+      </if>
+      <if test="user1 != null" >
+        User1,
+      </if>
+      <if test="custom != null" >
+        Custom,
+      </if>
+      <if test="saletotal != null" >
+        SaleTotal,
+      </if>
+      <if test="storetotal != null" >
+        StoreTotal,
+      </if>
+      <if test="saleok != null" >
+        SaleOK,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="moneytype != null" >
+        MoneyType,
+      </if>
+      <if test="mainmemo != null" >
+        MainMemo,
+      </if>
+      <if test="mainmemoex != null" >
+        MainMemoEx,
+      </if>
+      <if test="insertserial != null" >
+        InsertSerial,
+      </if>
+      <if test="productid != null" >
+        ProductID,
+      </if>
+      <if test="productname != null" >
+        ProductName,
+      </if>
+      <if test="productprice != null" >
+        ProductPrice,
+      </if>
+      <if test="productnumber != null" >
+        ProductNumber,
+      </if>
+      <if test="producttotal != null" >
+        ProductTotal,
+      </if>
+      <if test="productstoreprice != null" >
+        ProductStorePrice,
+      </if>
+      <if test="costmethod != null" >
+        CostMethod,
+      </if>
+      <if test="istaxprint != null" >
+        IsTaxPrint,
+      </if>
+      <if test="memo1 != null" >
+        Memo1,
+      </if>
+      <if test="memo2 != null" >
+        Memo2,
+      </if>
+      <if test="memo3 != null" >
+        Memo3,
+      </if>
+      <if test="paytype != null" >
+        PayType,
+      </if>
+      <if test="taxrate != null" >
+        TaxRate,
+      </if>
+      <if test="orgid != null" >
+        orgid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="accountid != null" >
+        #{accountid,jdbcType=INTEGER},
+      </if>
+      <if test="saleid != null" >
+        #{saleid,jdbcType=DECIMAL},
+      </if>
+      <if test="saledate != null" >
+        #{saledate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="store != null" >
+        #{store,jdbcType=INTEGER},
+      </if>
+      <if test="user != null" >
+        #{user,jdbcType=NVARCHAR},
+      </if>
+      <if test="user1 != null" >
+        #{user1,jdbcType=NVARCHAR},
+      </if>
+      <if test="custom != null" >
+        #{custom,jdbcType=NVARCHAR},
+      </if>
+      <if test="saletotal != null" >
+        #{saletotal,jdbcType=DECIMAL},
+      </if>
+      <if test="storetotal != null" >
+        #{storetotal,jdbcType=DECIMAL},
+      </if>
+      <if test="saleok != null" >
+        #{saleok,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=NVARCHAR},
+      </if>
+      <if test="moneytype != null" >
+        #{moneytype,jdbcType=INTEGER},
+      </if>
+      <if test="mainmemo != null" >
+        #{mainmemo,jdbcType=NVARCHAR},
+      </if>
+      <if test="mainmemoex != null" >
+        #{mainmemoex,jdbcType=NVARCHAR},
+      </if>
+      <if test="insertserial != null" >
+        #{insertserial,jdbcType=INTEGER},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=NVARCHAR},
+      </if>
+      <if test="productname != null" >
+        #{productname,jdbcType=NVARCHAR},
+      </if>
+      <if test="productprice != null" >
+        #{productprice,jdbcType=DECIMAL},
+      </if>
+      <if test="productnumber != null" >
+        #{productnumber,jdbcType=DECIMAL},
+      </if>
+      <if test="producttotal != null" >
+        #{producttotal,jdbcType=DECIMAL},
+      </if>
+      <if test="productstoreprice != null" >
+        #{productstoreprice,jdbcType=DECIMAL},
+      </if>
+      <if test="costmethod != null" >
+        #{costmethod,jdbcType=SMALLINT},
+      </if>
+      <if test="istaxprint != null" >
+        #{istaxprint,jdbcType=SMALLINT},
+      </if>
+      <if test="memo1 != null" >
+        #{memo1,jdbcType=NVARCHAR},
+      </if>
+      <if test="memo2 != null" >
+        #{memo2,jdbcType=NVARCHAR},
+      </if>
+      <if test="memo3 != null" >
+        #{memo3,jdbcType=NVARCHAR},
+      </if>
+      <if test="paytype != null" >
+        #{paytype,jdbcType=VARCHAR},
+      </if>
+      <if test="taxrate != null" >
+        #{taxrate,jdbcType=DECIMAL},
+      </if>
+      <if test="orgid != null" >
+        #{orgid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.dxt.third.core.entity.JdSaleExample" resultType="java.lang.Integer" >
+    select count(*) from jd_gtsale
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update jd_gtsale
+    <set >
+      <if test="record.accountid != null" >
+        AccountID = #{record.accountid,jdbcType=INTEGER},
+      </if>
+      <if test="record.saleid != null" >
+        SaleID = #{record.saleid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.saledate != null" >
+        SaleDate = #{record.saledate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.store != null" >
+        Store = #{record.store,jdbcType=INTEGER},
+      </if>
+      <if test="record.user != null" >
+        User = #{record.user,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.user1 != null" >
+        User1 = #{record.user1,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.custom != null" >
+        Custom = #{record.custom,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.saletotal != null" >
+        SaleTotal = #{record.saletotal,jdbcType=DECIMAL},
+      </if>
+      <if test="record.storetotal != null" >
+        StoreTotal = #{record.storetotal,jdbcType=DECIMAL},
+      </if>
+      <if test="record.saleok != null" >
+        SaleOK = #{record.saleok,jdbcType=INTEGER},
+      </if>
+      <if test="record.type != null" >
+        type = #{record.type,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.moneytype != null" >
+        MoneyType = #{record.moneytype,jdbcType=INTEGER},
+      </if>
+      <if test="record.mainmemo != null" >
+        MainMemo = #{record.mainmemo,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.mainmemoex != null" >
+        MainMemoEx = #{record.mainmemoex,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.insertserial != null" >
+        InsertSerial = #{record.insertserial,jdbcType=INTEGER},
+      </if>
+      <if test="record.productid != null" >
+        ProductID = #{record.productid,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.productname != null" >
+        ProductName = #{record.productname,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.productprice != null" >
+        ProductPrice = #{record.productprice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.productnumber != null" >
+        ProductNumber = #{record.productnumber,jdbcType=DECIMAL},
+      </if>
+      <if test="record.producttotal != null" >
+        ProductTotal = #{record.producttotal,jdbcType=DECIMAL},
+      </if>
+      <if test="record.productstoreprice != null" >
+        ProductStorePrice = #{record.productstoreprice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.costmethod != null" >
+        CostMethod = #{record.costmethod,jdbcType=SMALLINT},
+      </if>
+      <if test="record.istaxprint != null" >
+        IsTaxPrint = #{record.istaxprint,jdbcType=SMALLINT},
+      </if>
+      <if test="record.memo1 != null" >
+        Memo1 = #{record.memo1,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.memo2 != null" >
+        Memo2 = #{record.memo2,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.memo3 != null" >
+        Memo3 = #{record.memo3,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.paytype != null" >
+        PayType = #{record.paytype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taxrate != null" >
+        TaxRate = #{record.taxrate,jdbcType=DECIMAL},
+      </if>
+      <if test="record.orgid != null" >
+        orgid = #{record.orgid,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update jd_gtsale
+    set AccountID = #{record.accountid,jdbcType=INTEGER},
+      SaleID = #{record.saleid,jdbcType=DECIMAL},
+      SaleDate = #{record.saledate,jdbcType=TIMESTAMP},
+      Store = #{record.store,jdbcType=INTEGER},
+      User = #{record.user,jdbcType=NVARCHAR},
+      User1 = #{record.user1,jdbcType=NVARCHAR},
+      Custom = #{record.custom,jdbcType=NVARCHAR},
+      SaleTotal = #{record.saletotal,jdbcType=DECIMAL},
+      StoreTotal = #{record.storetotal,jdbcType=DECIMAL},
+      SaleOK = #{record.saleok,jdbcType=INTEGER},
+      type = #{record.type,jdbcType=NVARCHAR},
+      MoneyType = #{record.moneytype,jdbcType=INTEGER},
+      MainMemo = #{record.mainmemo,jdbcType=NVARCHAR},
+      MainMemoEx = #{record.mainmemoex,jdbcType=NVARCHAR},
+      InsertSerial = #{record.insertserial,jdbcType=INTEGER},
+      ProductID = #{record.productid,jdbcType=NVARCHAR},
+      ProductName = #{record.productname,jdbcType=NVARCHAR},
+      ProductPrice = #{record.productprice,jdbcType=DECIMAL},
+      ProductNumber = #{record.productnumber,jdbcType=DECIMAL},
+      ProductTotal = #{record.producttotal,jdbcType=DECIMAL},
+      ProductStorePrice = #{record.productstoreprice,jdbcType=DECIMAL},
+      CostMethod = #{record.costmethod,jdbcType=SMALLINT},
+      IsTaxPrint = #{record.istaxprint,jdbcType=SMALLINT},
+      Memo1 = #{record.memo1,jdbcType=NVARCHAR},
+      Memo2 = #{record.memo2,jdbcType=NVARCHAR},
+      Memo3 = #{record.memo3,jdbcType=NVARCHAR},
+      PayType = #{record.paytype,jdbcType=VARCHAR},
+      TaxRate = #{record.taxrate,jdbcType=DECIMAL},
+      orgid = #{record.orgid,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

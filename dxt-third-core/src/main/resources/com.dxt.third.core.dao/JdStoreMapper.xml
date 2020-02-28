@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dxt.third.core.dao.JdStoreMapper" >
+  <resultMap id="BaseResultMap" type="com.dxt.third.core.entity.JdStore" >
+    <constructor >
+      <arg column="gtaccountid" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="gtinvid" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="gtinvname" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="gtdepotid" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="gtdepotname" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="nsrinvid" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="nsrinvname" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="nsrdepotid" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="nrsdepotname" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="ztdepotid" jdbcType="NVARCHAR" javaType="java.lang.String" />
+      <arg column="ztdepotname" jdbcType="NVARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    gtaccountid, gtinvid, gtinvname, gtdepotid, gtdepotname, nsrinvid, nsrinvname, nsrdepotid, 
+    nrsdepotname, ztdepotid, ztdepotname
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.dxt.third.core.entity.JdStoreExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from jdpromise_store
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.dxt.third.core.entity.JdStoreExample" >
+    delete from jdpromise_store
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.dxt.third.core.entity.JdStore" >
+    insert into jdpromise_store (gtaccountid, gtinvid, gtinvname, 
+      gtdepotid, gtdepotname, nsrinvid, 
+      nsrinvname, nsrdepotid, nrsdepotname, 
+      ztdepotid, ztdepotname)
+    values (#{gtaccountid,jdbcType=NVARCHAR}, #{gtinvid,jdbcType=NVARCHAR}, #{gtinvname,jdbcType=NVARCHAR}, 
+      #{gtdepotid,jdbcType=NVARCHAR}, #{gtdepotname,jdbcType=NVARCHAR}, #{nsrinvid,jdbcType=NVARCHAR}, 
+      #{nsrinvname,jdbcType=NVARCHAR}, #{nsrdepotid,jdbcType=NVARCHAR}, #{nrsdepotname,jdbcType=NVARCHAR}, 
+      #{ztdepotid,jdbcType=NVARCHAR}, #{ztdepotname,jdbcType=NVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.dxt.third.core.entity.JdStore" >
+    insert into jdpromise_store
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="gtaccountid != null" >
+        gtaccountid,
+      </if>
+      <if test="gtinvid != null" >
+        gtinvid,
+      </if>
+      <if test="gtinvname != null" >
+        gtinvname,
+      </if>
+      <if test="gtdepotid != null" >
+        gtdepotid,
+      </if>
+      <if test="gtdepotname != null" >
+        gtdepotname,
+      </if>
+      <if test="nsrinvid != null" >
+        nsrinvid,
+      </if>
+      <if test="nsrinvname != null" >
+        nsrinvname,
+      </if>
+      <if test="nsrdepotid != null" >
+        nsrdepotid,
+      </if>
+      <if test="nrsdepotname != null" >
+        nrsdepotname,
+      </if>
+      <if test="ztdepotid != null" >
+        ztdepotid,
+      </if>
+      <if test="ztdepotname != null" >
+        ztdepotname,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="gtaccountid != null" >
+        #{gtaccountid,jdbcType=NVARCHAR},
+      </if>
+      <if test="gtinvid != null" >
+        #{gtinvid,jdbcType=NVARCHAR},
+      </if>
+      <if test="gtinvname != null" >
+        #{gtinvname,jdbcType=NVARCHAR},
+      </if>
+      <if test="gtdepotid != null" >
+        #{gtdepotid,jdbcType=NVARCHAR},
+      </if>
+      <if test="gtdepotname != null" >
+        #{gtdepotname,jdbcType=NVARCHAR},
+      </if>
+      <if test="nsrinvid != null" >
+        #{nsrinvid,jdbcType=NVARCHAR},
+      </if>
+      <if test="nsrinvname != null" >
+        #{nsrinvname,jdbcType=NVARCHAR},
+      </if>
+      <if test="nsrdepotid != null" >
+        #{nsrdepotid,jdbcType=NVARCHAR},
+      </if>
+      <if test="nrsdepotname != null" >
+        #{nrsdepotname,jdbcType=NVARCHAR},
+      </if>
+      <if test="ztdepotid != null" >
+        #{ztdepotid,jdbcType=NVARCHAR},
+      </if>
+      <if test="ztdepotname != null" >
+        #{ztdepotname,jdbcType=NVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.dxt.third.core.entity.JdStoreExample" resultType="java.lang.Integer" >
+    select count(*) from jdpromise_store
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update jdpromise_store
+    <set >
+      <if test="record.gtaccountid != null" >
+        gtaccountid = #{record.gtaccountid,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.gtinvid != null" >
+        gtinvid = #{record.gtinvid,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.gtinvname != null" >
+        gtinvname = #{record.gtinvname,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.gtdepotid != null" >
+        gtdepotid = #{record.gtdepotid,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.gtdepotname != null" >
+        gtdepotname = #{record.gtdepotname,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.nsrinvid != null" >
+        nsrinvid = #{record.nsrinvid,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.nsrinvname != null" >
+        nsrinvname = #{record.nsrinvname,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.nsrdepotid != null" >
+        nsrdepotid = #{record.nsrdepotid,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.nrsdepotname != null" >
+        nrsdepotname = #{record.nrsdepotname,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.ztdepotid != null" >
+        ztdepotid = #{record.ztdepotid,jdbcType=NVARCHAR},
+      </if>
+      <if test="record.ztdepotname != null" >
+        ztdepotname = #{record.ztdepotname,jdbcType=NVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update jdpromise_store
+    set gtaccountid = #{record.gtaccountid,jdbcType=NVARCHAR},
+      gtinvid = #{record.gtinvid,jdbcType=NVARCHAR},
+      gtinvname = #{record.gtinvname,jdbcType=NVARCHAR},
+      gtdepotid = #{record.gtdepotid,jdbcType=NVARCHAR},
+      gtdepotname = #{record.gtdepotname,jdbcType=NVARCHAR},
+      nsrinvid = #{record.nsrinvid,jdbcType=NVARCHAR},
+      nsrinvname = #{record.nsrinvname,jdbcType=NVARCHAR},
+      nsrdepotid = #{record.nsrdepotid,jdbcType=NVARCHAR},
+      nrsdepotname = #{record.nrsdepotname,jdbcType=NVARCHAR},
+      ztdepotid = #{record.ztdepotid,jdbcType=NVARCHAR},
+      ztdepotname = #{record.ztdepotname,jdbcType=NVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>
