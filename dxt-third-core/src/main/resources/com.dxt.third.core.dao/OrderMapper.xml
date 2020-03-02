@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dxt.third.core.dao.OrderMapper" >
+  <resultMap type="com.dxt.third.core.entity.Order" id="BaseColumnMap">
+    <id column="id" property="id"/>
+    <result column="orderNo" property="order_no"/>
+    <result column="mobile" property="mobile"/>
+    <result column="payType" property="pay_type"/>
+    <result column="storeId" property="store_id"/>
+    <result column="totalAmount" property="total_amount"/>
+    <result column="accountId" property="account_id"/>
+    <result column="shopAssistant" property="shop_assistant"/>
+    <result column="shopUser" property="shop_user"/>
+    <result column="status" property="status"/>
+    <result column="saleId" property="sale_id"/>
+    <result column="remark" property="remark"/>
+    <result column="stsinSaleId" property="stsin_sale_id"/>
+    <result column="stsinRemark" property="stsin_remark"/>
+    <result column="stsinStatus" property="stsin_status"/>
+    <result column="stsoutSaleId" property="stsout_sale_id"/>
+    <result column="stsoutRemark" property="stsout_remark"/>
+    <result column="stsoutStatus" property="stsout_status"/>
+    <result column="createTime" property="createTime"/>
+    <result column="updateTime" property="update_time"/>
+    <result column="delFlag" property="del_flag"/>
+    <result column="mainMemo" property="main_memo"/>
+
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, order_no, mobile, pay_type, store_id, total_amount, account_id, shop_assistant,
+    shop_user, STATUS, sale_id, remark, stsin_sale_id,stsin_remark,stsin_status,stsout_sale_id
+    ,stsout_remark,stsout_status,create_time, update_time, del_flag,main_memo
+  </sql>
+
+  <insert id="insert" parameterType="com.dxt.third.core.entity.Order">
+    insert into t_dxt_sale_order ( id, order_no, mobile, pay_type, store_id, total_amount, account_id, shop_assistant,
+    shop_user, STATUS, sale_id, remark, stsin_sale_id,stsin_remark,stsin_status,stsout_sale_id
+    ,stsout_remark,stsout_status,create_time, update_time, del_flag,main_memo
+      )
+    values (#{id}, #{orderNo}, #{mobile},
+      #{payType}, #{storeId}, #{totalAmount},
+      #{accountId}, #{shopAssistant}, #{shopUser},
+      #{status}, #{saleId}, #{remark},#{stsinSaleId},#{stsinRemark},#{stsinStatus},#{stsoutSaleId},
+      #{stsoutRemark},#{stsoutStatus},
+      #{createTime}, #{updateTime}, #{delFlag},#{mainMemo}
+      )
+  </insert>
+
+  <select id="findOrderByNo" parameterType="java.lang.String" resultMap="BaseColumnMap">
+    select <include refid="Base_Column_List"/>
+    from t_dxt_sale_order
+    where order_no =#{orderNo}
+  </select>
+
+</mapper>

@@ -93,7 +93,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    AccountID, SaleID, SaleDate, Store, User, User1, Custom, SaleTotal, StoreTotal, SaleOK, 
+    AccountID, SaleID, SaleDate, Store, [User], User1, Custom, SaleTotal, StoreTotal, SaleOK,
     type, MoneyType, MainMemo, MainMemoEx, InsertSerial, ProductID, ProductName, ProductPrice, 
     ProductNumber, ProductTotal, ProductStorePrice, CostMethod, IsTaxPrint, Memo1, Memo2, 
     Memo3, PayType, TaxRate, orgid
@@ -457,4 +457,15 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
+
+
+  <!-- 自定义方法-->
+  <select id="selectJdSaleList"  parameterType="java.util.Date" resultType="com.dxt.third.core.entity.JdSale">
+    select accountid AS "accountid",store AS "store",saleid AS "saleid"
+    from jd_gtsale
+    where convert(varchar(100),SaleDate,23) between #{beginDate} and #{endDate}
+    group by accountid,store,saleid
+
+  </select>
+  <!-- 自定义方法-->
 </mapper>

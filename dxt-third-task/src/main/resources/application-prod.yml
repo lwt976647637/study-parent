@@ -3,7 +3,7 @@ server:
 
 spring:
    application:
-    name: dxt-third-provider
+    name: dxt-third-task
    datasource:
     type: com.alibaba.druid.pool.DruidDataSource            # 当前数据源操作类型
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -27,11 +27,11 @@ eureka:
     service-url:
       defaultZone: http://192.168.50.173:7001//eureka/
   instance:
-    instance-id: dxt-third-provider-8877
+    instance-id: dxt-third-task-8877
     prefer-ip-address: true     #访问路径可以显示IP地址
 
 info:
-  app.name: dxt-third-provider
+  app.name: dxt-third-task
   company.name: www.lwt.com
   build.artifactId: $project.artifactId$
   build.version: $project.version$

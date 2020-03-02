@@ -30,6 +30,8 @@
         <springcloud.version>Finchley.SR2</springcloud.version>
         <lombok.version>1.18.0</lombok.version>
         <druid.version>1.0.31</druid.version>
+        <fastjson.version>1.2.30</fastjson.version>
+
     </properties>
 
     <dependencies>

@@ -8,25 +8,13 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 @Mapper
 public interface ProductMapper {
-    int countByExample(ProductExample example);
 
-    int deleteByExample(ProductExample example);
 
-    int deleteByPrimaryKey(String id);
+    void insert(Product product);
 
-    int insert(Product record);
 
-    int insertSelective(Product record);
-
-    List<Product> selectByExample(ProductExample example);
-
-    Product selectByPrimaryKey(String id);
-
-    int updateByExampleSelective(@Param("record") Product record, @Param("example") ProductExample example);
-
-    int updateByExample(@Param("record") Product record, @Param("example") ProductExample example);
-
-    int updateByPrimaryKeySelective(Product record);
-
-    int updateByPrimaryKey(Product record);
+    /**
+     * 根据订单单号和商品编码查询商品串号
+     */
+    String findProudctSerial(@Param("orderNo") String orderNo,@Param("productId") String productId,@Param("insertSerial") Integer insertSerial);
 }

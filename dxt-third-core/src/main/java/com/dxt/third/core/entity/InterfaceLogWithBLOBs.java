@@ -1,5 +1,7 @@
 package com.dxt.third.core.entity;
 
+import java.util.Date;
+
 public class InterfaceLogWithBLOBs extends InterfaceLog {
     private String requestMessage;
 

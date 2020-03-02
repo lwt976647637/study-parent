@@ -1,6 +1,6 @@
 package com.dxt.third.provider.service;
 
-import com.dxt.third.core.service.JdSaleService;
+import com.dxt.third.remote.service.JdSaleService;
 import org.springframework.stereotype.Service;
 
 /**
