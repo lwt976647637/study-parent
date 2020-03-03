@@ -9,10 +9,7 @@ import com.dxt.third.core.entity.JdSaleExample;
 import com.dxt.third.core.entity.Order;
 import com.dxt.third.core.entity.Product;
 import com.dxt.third.core.service.JdSaleService;
-import com.dxt.third.core.utils.DateUtils;
 import com.dxt.third.core.utils.StringUtils;
-import com.sun.tools.corba.se.idl.constExpr.Or;
-import jdk.nashorn.internal.runtime.JSONFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +87,7 @@ public class JdSaleServiceImpl implements JdSaleService {
                 product.setProductId(saleDetail.getProductid());
                 product.setProductName(saleDetail.getProductname());
                 double productPrice = saleDetail.getProductprice().doubleValue();
-                long productNumber = saleDetail.getProductnumber().longValue();
+                int productNumber = saleDetail.getProductnumber().intValue();
                 product.setProductPrice(String.valueOf(productPrice));
 
                 String proudctSerial = productMapper.findProudctSerial(String.valueOf(saleDetail.getSaleid()), saleDetail.getProductid(), saleDetail.getInsertserial());

@@ -36,11 +36,14 @@ info:
   build.artifactId: $project.artifactId$
   build.version: $project.version$
 
-  ##发送数据地址
-  esale.charge.order.send.address=http://192.168.150.212:8081/interface/Sales_CreateSaleEx.asp
-  ##E商调拨出库单生成接口
-  esale.charge.order.stsout.address=http://192.168.150.212:8081/stsout.asp?accesstoken=
-  ##E商调拨入库单生成接口
-  #E商接口地址==============================================END
-  esale.charge.order.stsin.address=http://192.168.150.212:8081/stsin.asp?accesstoken=
-
+#E商接口地址配置
+esale:
+  charge:
+    order:
+      send.key: xrRFie2=ls.%f2018#*.9
+      stsout.key: xrRFie1=ls.%f2384#*.9
+      send.address: http://192.168.150.212:8081/interface/Sales_CreateSaleEx.asp
+    #E商调拨出库单生成接口
+      stsout.address: http://192.168.150.212:8081/stsout.asp?accesstoken=
+    #E商调拨入库单生成接口
+      stsin.address: http://192.168.150.212:8081/stsin.asp?accesstoken=

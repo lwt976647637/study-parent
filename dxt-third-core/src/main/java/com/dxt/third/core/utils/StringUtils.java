@@ -1997,7 +1997,7 @@ public class StringUtils {
 
     // ---------------------------------------------------------------- shorten
 
-    public static Long strToLong(String str) throws NumberFormatException {
+    public static Long strToLong(String str) throws NumberFormatException{
         return Long.parseLong(str);
     }
 

@@ -17,7 +17,7 @@ public class Product {
 
     private String productSerial;
 
-    private Long productNumber;
+    private Integer productNumber;
 
     private String remark;
 
