@@ -3,27 +3,27 @@
 <mapper namespace="com.dxt.third.core.dao.OrderMapper" >
   <resultMap type="com.dxt.third.core.entity.Order" id="BaseColumnMap">
     <id column="id" property="id"/>
-    <result column="orderNo" property="order_no"/>
-    <result column="mobile" property="mobile"/>
-    <result column="payType" property="pay_type"/>
-    <result column="storeId" property="store_id"/>
-    <result column="totalAmount" property="total_amount"/>
-    <result column="accountId" property="account_id"/>
-    <result column="shopAssistant" property="shop_assistant"/>
-    <result column="shopUser" property="shop_user"/>
-    <result column="status" property="status"/>
-    <result column="saleId" property="sale_id"/>
-    <result column="remark" property="remark"/>
-    <result column="stsinSaleId" property="stsin_sale_id"/>
-    <result column="stsinRemark" property="stsin_remark"/>
-    <result column="stsinStatus" property="stsin_status"/>
-    <result column="stsoutSaleId" property="stsout_sale_id"/>
-    <result column="stsoutRemark" property="stsout_remark"/>
-    <result column="stsoutStatus" property="stsout_status"/>
-    <result column="createTime" property="createTime"/>
-    <result column="updateTime" property="update_time"/>
-    <result column="delFlag" property="del_flag"/>
-    <result column="mainMemo" property="main_memo"/>
+    <result property="orderNo" column="order_no"/>
+    <result property="mobile" column="mobile"/>
+    <result property="payType" column="pay_type"/>
+    <result property="storeId" column="store_id"/>
+    <result property="totalAmount" column="total_amount"/>
+    <result property="accountId" column="account_id"/>
+    <result property="shopAssistant" column="shop_assistant"/>
+    <result property="shopUser" column="shop_user"/>
+    <result property="status" column="status"/>
+    <result property="saleId" column="sale_id"/>
+    <result property="remark" column="remark"/>
+    <result property="stsinSaleId" column="stsin_sale_id"/>
+    <result property="stsinRemark" column="stsin_remark"/>
+    <result property="stsinStatus" column="stsin_status"/>
+    <result property="stsoutSaleId" column="stsout_sale_id"/>
+    <result property="stsoutRemark" column="stsout_remark"/>
+    <result property="stsoutStatus" column="stsout_status"/>
+    <result property="createTime" column="createTime"/>
+    <result property="updateTime" column="update_time"/>
+    <result property="delFlag" column="del_flag"/>
+    <result property="mainMemo" column="main_memo"/>
 
   </resultMap>
 

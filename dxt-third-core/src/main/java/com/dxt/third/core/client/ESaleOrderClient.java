@@ -5,9 +5,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.dxt.third.core.dao.OrderMapper;
+import com.dxt.third.core.dao.PinBackOrderMapper;
 import com.dxt.third.core.dao.ProductMapper;
 import com.dxt.third.core.entity.JdStore;
 import com.dxt.third.core.entity.Order;
+import com.dxt.third.core.entity.PinBackOrder;
 import com.dxt.third.core.entity.Product;
 import com.dxt.third.core.esale.*;
 import com.dxt.third.core.utils.ExceptionUtil;
@@ -23,6 +25,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.HTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -78,6 +81,9 @@ public class ESaleOrderClient {
 
     @Autowired
     private OrderMapper orderMapper;
+
+    @Autowired
+    private PinBackOrderMapper pinBackOrderMapper;
 
     /**
      * HttpClient httpClient = new DefaultHttpClient() 替代方式
@@ -196,13 +202,12 @@ public class ESaleOrderClient {
      * @date: 2018/12/6 9:42
      * @author: 李维涛
      */
-    public SendOrderResponse pinBackEsaleChargeOrder(Order order) throws Exception {
+    public SendOrderResponse pinBackOrder(Order order) throws Exception {
         logger.info("pinBackEsaleChargeOrder~~~~~~~~~~形成销退单据开始=======START");
-        SendOrderResponse sendOrderResponse = null;
+        SendOrderResponse sendOrderResponse;
         SendProductRequest sendProductRequest;
         List<SendProductRequest> productList = new ArrayList<>();
         SendOrderRequest sendOrderRequest = initSendChargeOrder(order);
-        String totalAmount;
         if (order.getTotalAmount().equals("0.0") || order.getTotalAmount().equals("0.00")) {
             sendOrderRequest.setTotalAmount("0");
         } else {
@@ -225,6 +230,16 @@ public class ESaleOrderClient {
         //调用E商接口形成销账订单
         sendOrderResponse = this.sendESaleOrderOrderInfo(sendOrderRequest);
         logger.info("pinBackEsaleChargeOrder~~~~~~~~~~形成销退单据结束=======END");
+
+        //将销退订单保存到数据库中
+        PinBackOrder pinBackOrder = new PinBackOrder();
+        BeanUtils.copyProperties(order,pinBackOrder);
+        pinBackOrder.setCreateTime(new Date());
+        pinBackOrder.setUpdateTime(new Date());
+        pinBackOrder.setSaleId(String.valueOf(sendOrderResponse.getSaleId()));
+        pinBackOrder.setStatus(String.valueOf(sendOrderResponse.getResult()));
+        pinBackOrder.setRemark(sendOrderResponse.getDesc());
+        pinBackOrderMapper.insert(pinBackOrder);
         return sendOrderResponse;
     }
 
@@ -402,7 +417,7 @@ public class ESaleOrderClient {
         sendOrderRequest.setAuOrderID(order.getOrderNo());
         sendOrderRequest.setAccountId(accountId);
         sendOrderRequest.setStore(store);
-        sendOrderRequest.setFlag("3");
+        sendOrderRequest.setFlag("6");
         sendOrderRequest.setUser(ESALE_DXYP_USER_INFO);
         sendOrderRequest.setUser1(ESALE_DXYP_USER_INFO);
         sendOrderRequest.setMobile(order.getMobile());

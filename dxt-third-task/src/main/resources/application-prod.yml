@@ -40,6 +40,8 @@ info:
 esale:
   charge:
     order:
+      send.key: xrRFie2=ls.%f2018#*.9
+      stsout.key: xrRFie1=ls.%f2384#*.9
       send.address: http://192.168.150.212:8081/interface/Sales_CreateSaleEx.asp
     #E商调拨出库单生成接口
       stsout.address: http://192.168.150.212:8081/stsout.asp?accesstoken=

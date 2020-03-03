@@ -30,5 +30,5 @@ public interface JdSaleService {
     /**
      * 京东履约订单处理
      */
-    void orderProcess(Order order);
+    void orderProcess(String orderNo);
 }

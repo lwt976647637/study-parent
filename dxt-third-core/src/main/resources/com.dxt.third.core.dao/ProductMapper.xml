@@ -37,7 +37,7 @@
     select ProductSerial from storeserial_one where billid = #{orderNo} and  productId = #{productId} and InsertSerial = #{insertSerial}
   </select>
 
-    <select id="findProductList">
+    <select id="findProductList"  parameterType="java.lang.String" resultMap="BaseResultMap">
       select <include refid="Base_Column_List"/>
       from t_dxt_sale_product
       where order_no = #{orderNo}

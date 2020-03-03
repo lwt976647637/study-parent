@@ -1,6 +1,7 @@
 package com.dxt.third.core.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.dxt.third.core.client.ESaleOrderClient;
 import com.dxt.third.core.dao.JdSaleMapper;
 import com.dxt.third.core.dao.OrderMapper;
 import com.dxt.third.core.dao.ProductMapper;
@@ -44,6 +45,9 @@ public class JdSaleServiceImpl implements JdSaleService {
 
     @Autowired
     private OrderMapper orderMapper;
+
+    @Autowired
+    private ESaleOrderClient eSaleOrderClient;
 
     /**
      * 获取京东履约销售商品列表
@@ -136,12 +140,17 @@ public class JdSaleServiceImpl implements JdSaleService {
      *
      * 4、生成销售订单
      */
+    public void orderProcess(String orderNo) {
+        try {
+            //获取订单详情
+            Order order = orderMapper.findOrderByNo(orderNo);
+            //1.生成销退订单
+            eSaleOrderClient.pinBackOrder(order);
+            //
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
-    public void orderProcess(Order order) {
-
-        //1.生成销退订单
-
-        //
 
     }
 }
