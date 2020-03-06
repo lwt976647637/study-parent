@@ -7,10 +7,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.dxt.third.core.dao.OrderMapper;
 import com.dxt.third.core.dao.PinBackOrderMapper;
 import com.dxt.third.core.dao.ProductMapper;
-import com.dxt.third.core.entity.JdStore;
-import com.dxt.third.core.entity.Order;
-import com.dxt.third.core.entity.PinBackOrder;
-import com.dxt.third.core.entity.Product;
+import com.dxt.third.core.entity.*;
 import com.dxt.third.core.esale.*;
 import com.dxt.third.core.utils.ESaleConstants;
 import com.dxt.third.core.utils.ExceptionUtil;
@@ -104,8 +101,8 @@ public class ESaleOrderClient {
         sendOrderRequest.setAuOrderID(order.getOrderNo());
         sendOrderRequest.setAccountId(order.getAccountId());
         sendOrderRequest.setStore(Integer.valueOf(order.getStoreId()));
-        sendOrderRequest.setFlag("6");
-        sendOrderRequest.setUser(order.getShopUser());
+        sendOrderRequest.setFlag("9");
+        sendOrderRequest.setUser(ESaleConstants.ESALE_DXYP_USER_INFO);
         sendOrderRequest.setUser1(order.getShopAssistant());
         sendOrderRequest.setMobile(order.getMobile());
         sendOrderRequest.setTotalAmount(order.getTotalAmount());
@@ -205,11 +202,11 @@ public class ESaleOrderClient {
         SendOrderResponse sendOrderResponse = null;
         String sendResult = null;
         //4、调用E商标准接口，发送销售订单数据
-        SendOrderRequest  sendOrderRequest = copySendOrder(order, jdStore.getGtaccountid().trim(), Integer.valueOf(jdStore.getGtdepotid().trim()));
+        SendOrderRequest sendOrderRequest = copySendOrder(order, jdStore.getNsrinvid().trim(), Integer.valueOf(jdStore.getNsrdepotid().trim()));
         map.put("sendOrderRequestKey", sendOrderRequest);
         //调用E商接口形成销账订单
         sendOrderResponse = this.sendESaleOrderOrderInfo(sendOrderRequest);
-        if (null!=sendOrderResponse) {
+        if (null != sendOrderResponse) {
 
             order.setStatus(String.valueOf(sendOrderResponse.getResult()));
             order.setRemark(sendOrderResponse.getDesc());
@@ -230,11 +227,21 @@ public class ESaleOrderClient {
      * @date: 2018/12/6 9:42
      * @author: 李维涛
      */
-    public SendOrderResponse pinBackOrder(Order order) throws Exception {
-        logger.info("pinBackEsaleChargeOrder~~~~~~~~~~形成销退单据开始=======START");
-        SendOrderResponse sendOrderResponse;
+    public SendOrderResponse pinBackOrder(Order order, JdStore jdStore) throws Exception {
+        SendOrderResponse sendOrderResponse = null;
         SendProductRequest sendProductRequest;
+        //判断当前订单是否成功生成销退订单
+        PinBackOrderExample pinBackOrderExample = new PinBackOrderExample();
+        pinBackOrderExample.createCriteria().andOrderNoEqualTo(order.getOrderNo());
+        List<PinBackOrder> pinBackOrders = pinBackOrderMapper.selectByExample(pinBackOrderExample);
+        if (!pinBackOrders.isEmpty()) {
+            return sendOrderResponse;
+        }
+        logger.info("pinBackEsaleChargeOrder~~~~~~~~~~形成销退单据开始=======START");
+
         List<SendProductRequest> productList = new ArrayList<>();
+        order.setAccountId(jdStore.getGtaccountid());
+        order.setStoreId(jdStore.getGtdepotid());
         SendOrderRequest sendOrderRequest = initSendChargeOrder(order);
         if (order.getTotalAmount().equals("0.0") || order.getTotalAmount().equals("0.00")) {
             sendOrderRequest.setTotalAmount("0");
@@ -242,16 +249,18 @@ public class ESaleOrderClient {
             sendOrderRequest.setTotalAmount(String.valueOf(Double.parseDouble(order.getTotalAmount()) * -1));
         }
         //根据当前编码获取商品集合
-        List<Product> products = productMapper.findProductList(order.getOrderNo());
-        for (Product product : products) {
-            sendProductRequest = new SendProductRequest();
-            sendProductRequest.setProductid(product.getProductId());
-            sendProductRequest.setProductname(product.getProductName());
-            sendProductRequest.setProductserial(StringUtils.isNotEmpty(product.getProductSerial()) ? product.getProductSerial() : "");
-            sendProductRequest.setProductprice(product.getProductPrice());
-            sendProductRequest.setProductnumber(Integer.valueOf(product.getProductNumber()) * -1);
-            sendProductRequest.setMemolist(StringUtils.isNotEmpty(product.getRemark()) ? product.getRemark() : "");
-            productList.add(sendProductRequest);
+        for (Product product : order.getProductList()) {
+            if(Double.valueOf(product.getProductPrice()) > 0.0){
+                sendProductRequest = new SendProductRequest();
+                sendProductRequest.setProductid(product.getProductId());
+                sendProductRequest.setProductname(product.getProductName());
+                sendProductRequest.setProductserial(StringUtils.isNotEmpty(product.getProductSerial()) ? product.getProductSerial() : "");
+                sendProductRequest.setProductprice(product.getProductPrice());
+                sendProductRequest.setProductnumber(Integer.valueOf(product.getProductNumber()) * -1);
+                sendProductRequest.setMemolist(StringUtils.isNotEmpty(product.getRemark()) ? product.getRemark() : "");
+                productList.add(sendProductRequest);
+            }
+
         }
 
         sendOrderRequest.setList(productList);
@@ -284,7 +293,7 @@ public class ESaleOrderClient {
         SendStsoutResponse sendStsoutResponse = null;
         SendStsoutRequest sendStsoutRequest;
         /* 区分合约编码 */
-        SendOrderRequest sendOrderRequest = copySendOrder(order, order.getAccountId().trim(), Integer.valueOf(jdStore.getGtdepotid().trim()));
+        SendOrderRequest sendOrderRequest = copySendOrder(order, jdStore.getGtaccountid().trim(), Integer.valueOf(jdStore.getGtdepotid().trim()));
         if (null != sendOrderRequest && null != jdStore) {
             //封装E商调拨单形成接口参数
             sendStsoutRequest = new SendStsoutRequest();
@@ -299,10 +308,10 @@ public class ESaleOrderClient {
             sendStsoutRequest.setAccountId(Integer.valueOf(order.getAccountId().trim()));
             //调出门店 odepotid
             sendStsoutRequest.setStoreSource(Integer.valueOf(jdStore.getGtdepotid().trim()));
-            sendStsoutRequest.setMainmemo("迪信优品形成调拨出库单");
+            sendStsoutRequest.setMainmemo("京东履约形成调拨出库单");
             sendStsoutRequest.setStoretostoreid(0);
             sendStsoutRequest.setStsType(1);
-            sendStsoutRequest.setUserName(sendOrderRequest.getUser());
+            sendStsoutRequest.setUserName(ESaleConstants.ESALE_DXYP_USER_INFO);
             sendStsoutRequest.setList(sendOrderRequest.getList());
             //调出门店和对方门店相等则不生成调拨单
             if (!sendStsoutRequest.getStoreOrigin().equals(sendStsoutRequest.getStoreSource())) {
@@ -346,16 +355,18 @@ public class ESaleOrderClient {
         String result = null;
         try {
 
-            String encode = URLEncoder.encode(ESaleConstants.ESALE_DXYP_USER_INFO, "UTF-8");
+            String encode = URLEncoder.encode(ESaleConstants.ESALE_DXYP_USER_INFO);
             //封装签名信息
             String signParam = stsoutKey + encode + sendStsoutRequest.getStoreSource();
+            logger.info("ESaleOrderHttpClient：send：调拨出库单生成接口签名信息" + signParam);
             String sign = MD5Util.string2MD5(signParam);
+            logger.info("ESaleOrderHttpClient：send：调拨出库单生成接口签名" + sign.toUpperCase());
             String paramJson = JSON.toJSONString(sendStsoutRequest);
             HttpClient httpClient = createDefault();
             logger.info("ESaleOrderHttpClient：send：调拨出库单生成接口发送报文：" + paramJson);
             map.put("sendStsoutRequest", paramJson);
             //调用调拨单生成接口
-            logger.info("调拨出库接口:esaleChargeOrderStsoutAddress:" + esaleChargeOrderStsoutAddress);
+            logger.info("调拨出库接口:esaleChargeOrderStsoutAddress:" + esaleChargeOrderStsoutAddress + sign.toUpperCase());
             HttpPost httpPost = new HttpPost(esaleChargeOrderStsoutAddress + sign.toUpperCase());
             httpPost.addHeader(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
             StringEntity stringEntity = new StringEntity(paramJson, Charset.forName("gbk"));
@@ -445,8 +456,8 @@ public class ESaleOrderClient {
         sendOrderRequest.setAuOrderID(order.getOrderNo());
         sendOrderRequest.setAccountId(accountId);
         sendOrderRequest.setStore(store);
-        sendOrderRequest.setFlag("6");
-        sendOrderRequest.setUser(order.getShopUser());
+        sendOrderRequest.setFlag("9");
+        sendOrderRequest.setUser(ESaleConstants.ESALE_DXYP_USER_INFO);
         sendOrderRequest.setUser1(order.getShopAssistant());
         sendOrderRequest.setMobile(order.getMobile());
         sendOrderRequest.setTotalAmount(order.getTotalAmount());
@@ -455,13 +466,17 @@ public class ESaleOrderClient {
         sendOrderRequest.setMainmemo("");
         sendOrderRequest.setReturnid(null);
         for (Product product : order.getProductList()) {
-            sendProductRequest = new SendProductRequest();
-            sendProductRequest.setProductid(product.getProductId());
-            sendProductRequest.setProductname(product.getProductName());
-            sendProductRequest.setProductserial(StringUtils.isEmpty(product.getProductSerial()) ? "" : product.getProductSerial());
-            sendProductRequest.setProductprice(product.getProductPrice());
-            sendProductRequest.setProductnumber(product.getProductNumber());
-            sendProductRequest.setMemolist(StringUtils.isNotEmpty(product.getRemark()) ? product.getRemark() : "");
+            if(Double.valueOf(product.getProductPrice())>0.0){
+                sendProductRequest = new SendProductRequest();
+                sendProductRequest.setProductid(product.getProductId());
+                sendProductRequest.setProductname(product.getProductName());
+                sendProductRequest.setProductserial(StringUtils.isEmpty(product.getProductSerial()) ? "" : product.getProductSerial());
+                sendProductRequest.setProductprice(product.getProductPrice());
+                sendProductRequest.setProductnumber(product.getProductNumber());
+                sendProductRequest.setMemolist(StringUtils.isNotEmpty(product.getRemark()) ? product.getRemark() : "");
+                productList.add(sendProductRequest);
+            }
+
 
         }
         //设置商品信息

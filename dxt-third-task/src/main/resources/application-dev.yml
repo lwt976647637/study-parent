@@ -25,9 +25,9 @@ mybatis:
 eureka:
   client: #客户端注册进eureka服务列表内
     service-url:
-      defaultZone: http://192.168.50.173:7001//eureka/
+      defaultZone: http://192.168.50.173:7001/eureka/
   instance:
-    instance-id: dxt-third-task-8877
+    instance-id: dxt-third-task-7992
     prefer-ip-address: true     #访问路径可以显示IP地址
 
 info:
@@ -40,7 +40,7 @@ info:
 esale:
   charge:
     order:
-      send.key: zXmFiw1=ls.%f2019#*.5
+      send.key: kXM%d0g#nR6b&hw$Ht2$
       stsout.key: xrRFie1=ls.%f2384#*.9
       send.address: http://192.168.150.212:8081/interface/Sales_CreateSaleEx.asp
     #E商调拨出库单生成接口

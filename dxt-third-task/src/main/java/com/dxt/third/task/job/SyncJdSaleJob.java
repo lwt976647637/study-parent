@@ -44,7 +44,7 @@ public class SyncJdSaleJob implements SchedulingConfigurer {
 
     public SyncJdSaleJob() {
         // 每10分钟进行PS数据的同步
-        cron = "0 0/5 * * * ?";
+        cron = "0/30 * * * * ?";
     }
 
     @Override
@@ -58,6 +58,7 @@ public class SyncJdSaleJob implements SchedulingConfigurer {
                 //        Date beginDate = DateUtils.dateAddMonths(endDate, -1);
                 Date beginDate = DateUtils.dateAddYears(endDate, -1);
                 List<JdSale> jdSales = jdSaleService.selectJdSaleList(beginDate, endDate);
+                logger.info("等待同步履约订单数量:"+jdSales.size());
                 for (JdSale jdSale : jdSales) {
                     try {
                         jdSaleService.saveJdSale(jdSale);

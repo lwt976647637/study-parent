@@ -78,7 +78,8 @@ public class JdSaleServiceImpl implements JdSaleService {
             order.setCreateTime(jdSaleDetail.getSaledate());
             order.setUpdateTime(jdSaleDetail.getSaledate());
             order.setStoreId(String.valueOf(jdSaleDetail.getStore()));
-            order.setMobile(jdSaleDetail.getCustom().replaceAll("#",""));
+            String mobile = jdSaleDetail.getCustom().replaceAll("＃", "").trim();
+            order.setMobile(mobile);
             order.setPayType(jdSaleDetail.getPaytype());
             order.setShopAssistant(jdSaleDetail.getUser1());
             order.setShopUser(jdSaleDetail.getUser());
@@ -153,6 +154,13 @@ public class JdSaleServiceImpl implements JdSaleService {
                 logger.info("当前订单不存在{}",orderNo);
                 return;
             }
+
+            List<Product> products = productMapper.findProductList(order.getOrderNo());
+            if(products==null){
+                logger.info("商品列表不存在");
+                return;
+            }
+            order.setProductList(products);
             //获取当前门店信息
             JdStoreExample jdStoreExample = new JdStoreExample();
             jdStoreExample.createCriteria().andGtinvidEqualTo(order.getOrgId());
@@ -162,7 +170,7 @@ public class JdSaleServiceImpl implements JdSaleService {
             }
             JdStore jdStore = jdStores.get(0);
             //1.生成销退订单
-            eSaleOrderClient.pinBackOrder(order);
+            eSaleOrderClient.pinBackOrder(order,jdStore);
             //2、生成调拨出库单
             eSaleOrderClient.createStsoutOrder(order, map, jdStore);
             //3、生成调拨入库单
@@ -191,6 +199,8 @@ public class JdSaleServiceImpl implements JdSaleService {
             }
             //4、生成销售订单
             eSaleOrderClient.sendESaleOrder(order,map,jdStore);
+
+
 
 
         }catch (Exception e){
