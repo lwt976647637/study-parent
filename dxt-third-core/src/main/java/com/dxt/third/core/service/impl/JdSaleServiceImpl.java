@@ -3,13 +3,15 @@ package com.dxt.third.core.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.dxt.third.core.client.ESaleOrderClient;
 import com.dxt.third.core.dao.JdSaleMapper;
+import com.dxt.third.core.dao.JdStoreMapper;
 import com.dxt.third.core.dao.OrderMapper;
 import com.dxt.third.core.dao.ProductMapper;
-import com.dxt.third.core.entity.JdSale;
-import com.dxt.third.core.entity.JdSaleExample;
-import com.dxt.third.core.entity.Order;
-import com.dxt.third.core.entity.Product;
+import com.dxt.third.core.entity.*;
+import com.dxt.third.core.esale.SendStsinRequest;
+import com.dxt.third.core.esale.SendStsinResponse;
+import com.dxt.third.core.esale.SendStsoutResponse;
 import com.dxt.third.core.service.JdSaleService;
+import com.dxt.third.core.utils.ESaleConstants;
 import com.dxt.third.core.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @ProjectName: dxt-third-parent
@@ -45,6 +44,9 @@ public class JdSaleServiceImpl implements JdSaleService {
 
     @Autowired
     private OrderMapper orderMapper;
+
+    @Autowired
+    private JdStoreMapper jdStoreMapper;
 
     @Autowired
     private ESaleOrderClient eSaleOrderClient;
@@ -81,6 +83,7 @@ public class JdSaleServiceImpl implements JdSaleService {
             order.setShopAssistant(jdSaleDetail.getUser1());
             order.setShopUser(jdSaleDetail.getUser());
             order.setMainMemo(jdSaleDetail.getMainmemo());
+            order.setOrgId(String.valueOf(jdSaleDetail.getOrgid()));
 
             for (JdSale saleDetail : jdSaleDetails) {
                 product = new Product();
@@ -117,7 +120,6 @@ public class JdSaleServiceImpl implements JdSaleService {
             products.clear();
 
         }
-        logger.info("同步京东履约销售列表信息～结束");
 
     }
 
@@ -142,11 +144,55 @@ public class JdSaleServiceImpl implements JdSaleService {
      */
     public void orderProcess(String orderNo) {
         try {
+            SendStsinRequest sendStsinRequest;
+            SendStsinResponse sendStsinResponse;
+            Map<String,Object> map = new HashMap<>(10);
             //获取订单详情
             Order order = orderMapper.findOrderByNo(orderNo);
+            if(order==null){
+                logger.info("当前订单不存在{}",orderNo);
+                return;
+            }
+            //获取当前门店信息
+            JdStoreExample jdStoreExample = new JdStoreExample();
+            jdStoreExample.createCriteria().andGtinvidEqualTo(order.getOrgId());
+            List<JdStore> jdStores = jdStoreMapper.selectByExample(jdStoreExample);
+            if(jdStores.isEmpty()){
+                return ;
+            }
+            JdStore jdStore = jdStores.get(0);
             //1.生成销退订单
             eSaleOrderClient.pinBackOrder(order);
-            //
+            //2、生成调拨出库单
+            eSaleOrderClient.createStsoutOrder(order, map, jdStore);
+            //3、生成调拨入库单
+            //调拨出库单已形成,开始形成调拨入库单
+            //封装请求参数
+            if (StringUtils.isEmpty(order.getStsinStatus())
+                    && ("1".equals(order.getStsoutStatus())
+                    || "2".equals(order.getStsoutStatus()))
+                    && StringUtils.isNotEmpty(order.getStsoutSaleId())) {
+                sendStsinRequest = new SendStsinRequest();
+                sendStsinRequest.setStoretostoreid(order.getStsoutSaleId().trim());
+                sendStsinRequest.setStstype(0);
+                sendStsinRequest.setUsername(ESaleConstants.ESALE_DXYP_USER_INFO);
+                //调拨入库单账套以对方门店账套为主
+                sendStsinRequest.setAccountid(Integer.valueOf(jdStore.getGtaccountid().trim()));
+                sendStsinRequest.setStsid(0);
+                sendStsinResponse = eSaleOrderClient.sendESaletSinInfo(sendStsinRequest, map, jdStore.getGtdepotid().trim());
+                if (null != sendStsinResponse) {
+                    order.setStsinStatus(String.valueOf(sendStsinResponse.getResult()));
+                    order.setStsinSaleId(sendStsinResponse.getStsid());
+                    order.setStsinRemark(sendStsinResponse.getDesc());
+                    order.setUpdateTime(new Date());
+                    //将更新调拨入库单状态
+                    orderMapper.updateStatusByOrderId(order);
+                }
+            }
+            //4、生成销售订单
+            eSaleOrderClient.sendESaleOrder(order,map,jdStore);
+
+
         }catch (Exception e){
             e.printStackTrace();
         }

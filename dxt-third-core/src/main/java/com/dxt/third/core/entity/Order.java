@@ -55,5 +55,11 @@ public class Order {
 
     private String mainMemo;
 
+    private String orgId;
+
     List<Product> productList;
+
+
+
+
 }

@@ -12,6 +12,7 @@ import com.dxt.third.core.entity.Order;
 import com.dxt.third.core.entity.PinBackOrder;
 import com.dxt.third.core.entity.Product;
 import com.dxt.third.core.esale.*;
+import com.dxt.third.core.utils.ESaleConstants;
 import com.dxt.third.core.utils.ExceptionUtil;
 import com.dxt.third.core.utils.MD5Util;
 import com.dxt.third.core.utils.StringUtils;
@@ -53,8 +54,6 @@ import java.util.Map;
 public class ESaleOrderClient {
     private Logger logger = LoggerFactory.getLogger(ESaleOrderClient.class);
 
-    //E商调拨单、销账订单 指定人员信息
-    public static final String ESALE_DXYP_USER_INFO = "99999999迪信优品";
 
     @Value("${esale.charge.order.send.key}")
     private String key;
@@ -194,6 +193,35 @@ public class ESaleOrderClient {
 
     }
 
+    /**
+     * @return
+     * @method
+     * @description 调用E商标准接口形成销售订单
+     * @date: 2018/12/6 9:42
+     * @author: 李维涛
+     */
+    public SendOrderResponse sendESaleOrder(Order order, Map map, JdStore jdStore) throws Exception {
+        logger.info("~~~~~~~~~~形成销售订单开始=======START");
+        SendOrderResponse sendOrderResponse = null;
+        String sendResult = null;
+        //4、调用E商标准接口，发送销售订单数据
+        SendOrderRequest  sendOrderRequest = copySendOrder(order, jdStore.getGtaccountid().trim(), Integer.valueOf(jdStore.getGtdepotid().trim()));
+        map.put("sendOrderRequestKey", sendOrderRequest);
+        //调用E商接口形成销账订单
+        sendOrderResponse = this.sendESaleOrderOrderInfo(sendOrderRequest);
+        if (null!=sendOrderResponse) {
+
+            order.setStatus(String.valueOf(sendOrderResponse.getResult()));
+            order.setRemark(sendOrderResponse.getDesc());
+            order.setSaleId(String.valueOf(sendOrderResponse.getSaleId()));
+            order.setUpdateTime(new Date());
+            orderMapper.updateStatusByOrderId(order);
+            logger.info("ChargeOffOrderServiceImpl: 销售订单更新状态：" + order.getStatus());
+        }
+        logger.info("~~~~~~~~~~形成销售订单结束=======END");
+        return sendOrderResponse;
+    }
+
 
     /**
      * @return
@@ -233,7 +261,7 @@ public class ESaleOrderClient {
 
         //将销退订单保存到数据库中
         PinBackOrder pinBackOrder = new PinBackOrder();
-        BeanUtils.copyProperties(order,pinBackOrder);
+        BeanUtils.copyProperties(order, pinBackOrder);
         pinBackOrder.setCreateTime(new Date());
         pinBackOrder.setUpdateTime(new Date());
         pinBackOrder.setSaleId(String.valueOf(sendOrderResponse.getSaleId()));
@@ -318,7 +346,7 @@ public class ESaleOrderClient {
         String result = null;
         try {
 
-            String encode = URLEncoder.encode(ESALE_DXYP_USER_INFO, "UTF-8");
+            String encode = URLEncoder.encode(ESaleConstants.ESALE_DXYP_USER_INFO, "UTF-8");
             //封装签名信息
             String signParam = stsoutKey + encode + sendStsoutRequest.getStoreSource();
             String sign = MD5Util.string2MD5(signParam);
@@ -330,7 +358,7 @@ public class ESaleOrderClient {
             logger.info("调拨出库接口:esaleChargeOrderStsoutAddress:" + esaleChargeOrderStsoutAddress);
             HttpPost httpPost = new HttpPost(esaleChargeOrderStsoutAddress + sign.toUpperCase());
             httpPost.addHeader(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
-            StringEntity stringEntity = new StringEntity(paramJson, Charset.forName("gb2312"));
+            StringEntity stringEntity = new StringEntity(paramJson, Charset.forName("gbk"));
             httpPost.setEntity(stringEntity);
             HttpResponse response = httpClient.execute(httpPost);
             InputStream inStream = response.getEntity().getContent();
@@ -366,7 +394,7 @@ public class ESaleOrderClient {
         logger.info("~~~~~~~~~~~~~~~~~~~~~~~~：调拨入库单生成开始：START");
         SendStsinResponse sendStsinResponse = null;
         try {
-            String encode = URLEncoder.encode(ESALE_DXYP_USER_INFO, "UTF-8");
+            String encode = URLEncoder.encode(ESaleConstants.ESALE_DXYP_USER_INFO, "UTF-8");
             //封装签名信息
             String signParam = stsoutKey + encode + storesource;
             logger.info("ESaleOrderHttpClient：send：调拨入库单生成接口签名信息" + signParam);
@@ -418,8 +446,8 @@ public class ESaleOrderClient {
         sendOrderRequest.setAccountId(accountId);
         sendOrderRequest.setStore(store);
         sendOrderRequest.setFlag("6");
-        sendOrderRequest.setUser(ESALE_DXYP_USER_INFO);
-        sendOrderRequest.setUser1(ESALE_DXYP_USER_INFO);
+        sendOrderRequest.setUser(order.getShopUser());
+        sendOrderRequest.setUser1(order.getShopAssistant());
         sendOrderRequest.setMobile(order.getMobile());
         sendOrderRequest.setTotalAmount(order.getTotalAmount());
         sendOrderRequest.setPayType(order.getPayType());

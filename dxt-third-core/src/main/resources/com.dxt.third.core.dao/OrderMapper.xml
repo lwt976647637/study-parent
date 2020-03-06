@@ -24,26 +24,27 @@
     <result property="updateTime" column="update_time"/>
     <result property="delFlag" column="del_flag"/>
     <result property="mainMemo" column="main_memo"/>
+    <result property="orgId" column="org_id"/>
 
   </resultMap>
 
   <sql id="Base_Column_List" >
     id, order_no, mobile, pay_type, store_id, total_amount, account_id, shop_assistant,
     shop_user, STATUS, sale_id, remark, stsin_sale_id,stsin_remark,stsin_status,stsout_sale_id
-    ,stsout_remark,stsout_status,create_time, update_time, del_flag,main_memo
+    ,stsout_remark,stsout_status,create_time, update_time, del_flag,main_memo,org_id
   </sql>
 
   <insert id="insert" parameterType="com.dxt.third.core.entity.Order">
     insert into t_dxt_sale_order ( id, order_no, mobile, pay_type, store_id, total_amount, account_id, shop_assistant,
     shop_user, STATUS, sale_id, remark, stsin_sale_id,stsin_remark,stsin_status,stsout_sale_id
-    ,stsout_remark,stsout_status,create_time, update_time, del_flag,main_memo
+    ,stsout_remark,stsout_status,create_time, update_time, del_flag,main_memo,org_id
       )
     values (#{id}, #{orderNo}, #{mobile},
       #{payType}, #{storeId}, #{totalAmount},
       #{accountId}, #{shopAssistant}, #{shopUser},
       #{status}, #{saleId}, #{remark},#{stsinSaleId},#{stsinRemark},#{stsinStatus},#{stsoutSaleId},
       #{stsoutRemark},#{stsoutStatus},
-      #{createTime}, #{updateTime}, #{delFlag},#{mainMemo}
+      #{createTime}, #{updateTime}, #{delFlag},#{mainMemo},#{orgId}
       )
   </insert>
 
@@ -56,10 +57,27 @@
 
   <update id="updateStatusByOrderId" parameterType="com.dxt.third.core.entity.Order" >
       update t_dxt_sale_order
-      set
-      stsout_sale_id = #{stsoutSaleId},
-      stsout_remark = #{stsoutRemark},
-      stsout_status = #{stsoutStatus}
+      <set>
+        <if test="stsoutSaleId != null">
+          stsout_sale_id = #{stsoutSaleId},
+        </if>
+        <if test="stsoutSaleId != null">
+          stsout_remark = #{stsoutRemark},
+        </if>
+        <if test="stsoutSaleId != null">
+          stsout_status = #{stsoutStatus},
+        </if>
+
+        <if test="stsinSaleId != null">
+          stsin_sale_id = #{stsinSaleId},
+        </if>
+        <if test="stsinStatus != null">
+          stsin_status = #{stsinStatus},
+        </if>
+        <if test="stsinRemark != null">
+          stsin_remark = #{stsinRemark},
+        </if>
+      </set>
       where order_no = #{orderNo}
   </update>
 </mapper>

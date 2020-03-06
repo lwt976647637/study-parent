@@ -16,7 +16,7 @@ public class JdSaleController {
     /**
      * 形成订单
      */
-    @GetMapping("/pinBackOrder/{orderNo}")
+    @GetMapping("/orderProcess/{orderNo}")
     public void createESaleOrder(@PathVariable("orderNo") String orderNo) {
         jdSaleService.orderProcess(orderNo);
     }
