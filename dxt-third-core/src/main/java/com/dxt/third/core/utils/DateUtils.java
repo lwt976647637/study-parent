@@ -1,5 +1,6 @@
 package com.dxt.third.core.utils;
 
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -56,6 +57,7 @@ public class DateUtils {
         return sdf.format(date);
     }
 
+
     /**
      * 字符串解析成时间对象
      *
@@ -84,6 +86,16 @@ public class DateUtils {
         return dateTimeString;
     }
 
+    /**
+     * 格式化日期类型为：yyyy-MM-dd
+     * @param dateTime
+     * @return
+     * @throws ParseException
+     */
+    public static Date dateFormatToDate(Date dateTime) throws ParseException {
+        String dateTimeString = DateUtils.dateFormat(dateTime, DateUtils.DATE_PATTERN);
+        return DateUtils.dateParse(dateTimeString,DateUtils.DATE_PATTERN);
+    }
     /**
      * 当时、分、秒为00:00:00时，将日期时间格式成只有日期的字符串，
      * 当时、分、秒不为00:00:00时，直接返回
@@ -156,7 +168,6 @@ public class DateUtils {
      * 时间加减秒数
      *
      * @param startDate 要处理的时间，Null则为当前时间
-     * @param minutes   加减的秒数
      * @return
      */
     public static Date dateAddSeconds(Date startDate, int seconds) {
