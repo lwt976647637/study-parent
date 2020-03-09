@@ -11,7 +11,7 @@
   </sql>
   
   <insert id="insert" parameterType="com.dxt.third.core.entity.InterfaceLog" >
-    insert into t_dxt_interface_log (id,order_no server_name, method_name,
+    insert into t_dxt_interface_log (id,order_no,server_name, method_name,
       type, create_time, update_time, 
       remark, elapsed_time, request_message, 
       response_message)
