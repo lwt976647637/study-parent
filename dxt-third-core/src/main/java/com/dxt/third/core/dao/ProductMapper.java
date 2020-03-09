@@ -16,7 +16,7 @@ public interface ProductMapper {
     /**
      * 根据订单单号和商品编码查询商品串号
      */
-    String findProudctSerial(@Param("orderNo") String orderNo,@Param("productId") String productId,@Param("insertSerial") Integer insertSerial);
+    String findProudctSerial(@Param("orderNo") String orderNo,@Param("insertSerial") Integer insertSerial);
 
     /**
      * 根据订单单号获取商品列表

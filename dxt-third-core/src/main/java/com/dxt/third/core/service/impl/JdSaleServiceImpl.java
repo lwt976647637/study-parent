@@ -7,6 +7,7 @@ import com.dxt.third.core.dao.JdStoreMapper;
 import com.dxt.third.core.dao.OrderMapper;
 import com.dxt.third.core.dao.ProductMapper;
 import com.dxt.third.core.entity.*;
+import com.dxt.third.core.esale.SendOrderResponse;
 import com.dxt.third.core.esale.SendStsinRequest;
 import com.dxt.third.core.esale.SendStsinResponse;
 import com.dxt.third.core.esale.SendStsoutResponse;
@@ -97,8 +98,7 @@ public class JdSaleServiceImpl implements JdSaleService {
                 double productPrice = saleDetail.getProductprice().doubleValue();
                 int productNumber = saleDetail.getProductnumber().intValue();
                 product.setProductPrice(String.valueOf(productPrice));
-
-                String proudctSerial = productMapper.findProudctSerial(String.valueOf(saleDetail.getSaleid()), saleDetail.getProductid(), saleDetail.getInsertserial());
+                String proudctSerial = productMapper.findProudctSerial(String.valueOf(saleDetail.getSaleid()), saleDetail.getInsertserial());
                 logger.info("查询商品串号信息:" + proudctSerial);
                 product.setProductSerial(StringUtils.isNotEmpty(proudctSerial) ? proudctSerial : "");
                 product.setRemark(saleDetail.getMainmemo());
@@ -170,7 +170,8 @@ public class JdSaleServiceImpl implements JdSaleService {
             }
             JdStore jdStore = jdStores.get(0);
             //1.生成销退订单
-            eSaleOrderClient.pinBackOrder(order,jdStore);
+            eSaleOrderClient.pinBackOrder(order, jdStore);
+
             //2、生成调拨出库单
             eSaleOrderClient.createStsoutOrder(order, map, jdStore);
             //3、生成调拨入库单
@@ -199,8 +200,6 @@ public class JdSaleServiceImpl implements JdSaleService {
             }
             //4、生成销售订单
             eSaleOrderClient.sendESaleOrder(order,map,jdStore);
-
-
 
 
         }catch (Exception e){

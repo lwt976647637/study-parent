@@ -4,11 +4,13 @@ package com.dxt.third.core.client;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.dxt.third.core.dao.InterfaceLogMapper;
 import com.dxt.third.core.dao.OrderMapper;
 import com.dxt.third.core.dao.PinBackOrderMapper;
 import com.dxt.third.core.dao.ProductMapper;
 import com.dxt.third.core.entity.*;
 import com.dxt.third.core.esale.*;
+import com.dxt.third.core.service.InterfaceLogService;
 import com.dxt.third.core.utils.ESaleConstants;
 import com.dxt.third.core.utils.ExceptionUtil;
 import com.dxt.third.core.utils.MD5Util;
@@ -80,6 +82,9 @@ public class ESaleOrderClient {
 
     @Autowired
     private PinBackOrderMapper pinBackOrderMapper;
+
+    @Autowired
+    private InterfaceLogService interfaceLogService;
 
     /**
      * HttpClient httpClient = new DefaultHttpClient() 替代方式
@@ -216,6 +221,8 @@ public class ESaleOrderClient {
             logger.info("ChargeOffOrderServiceImpl: 销售订单更新状态：" + order.getStatus());
         }
         logger.info("~~~~~~~~~~形成销售订单结束=======END");
+        interfaceLogService.saveOrderRecord(order.getOrderNo(),JSON.toJSONString(sendOrderRequest),JSON.toJSONString(sendOrderResponse),"销售订单");
+
         return sendOrderResponse;
     }
 
@@ -277,6 +284,7 @@ public class ESaleOrderClient {
         pinBackOrder.setStatus(String.valueOf(sendOrderResponse.getResult()));
         pinBackOrder.setRemark(sendOrderResponse.getDesc());
         pinBackOrderMapper.insert(pinBackOrder);
+        interfaceLogService.saveOrderRecord(order.getOrderNo(),JSON.toJSONString(sendOrderRequest),JSON.toJSONString(sendOrderResponse),"销退订单");
         return sendOrderResponse;
     }
 
@@ -291,7 +299,7 @@ public class ESaleOrderClient {
     public SendStsoutResponse createStsoutOrder(Order order, Map map, JdStore jdStore) {
         logger.info("~~~~~~~~~~形成调拨出库单开始~~~~~~~~~~START");
         SendStsoutResponse sendStsoutResponse = null;
-        SendStsoutRequest sendStsoutRequest;
+        SendStsoutRequest sendStsoutRequest = null;
         /* 区分合约编码 */
         SendOrderRequest sendOrderRequest = copySendOrder(order, jdStore.getGtaccountid().trim(), Integer.valueOf(jdStore.getGtdepotid().trim()));
         if (null != sendOrderRequest && null != jdStore) {
@@ -339,6 +347,8 @@ public class ESaleOrderClient {
             }
         }
         logger.info("~~~~~~~~~~形成调拨出库单结束~~~~~~~~~~END");
+        interfaceLogService.saveOrderRecord(order.getOrderNo(),JSON.toJSONString(sendStsoutRequest),JSON.toJSONString(sendStsoutResponse),"调拨出库单");
+
         return sendStsoutResponse;
     }
 
@@ -445,6 +455,8 @@ public class ESaleOrderClient {
         }
 
         logger.info("~~~~~~~~~~~~~~~~~~~~~~~~：调拨入库单生成结束：END");
+        interfaceLogService.saveOrderRecord(sendStsinRequest.getStoretostoreid(),JSON.toJSONString(sendStsinRequest),JSON.toJSONString(sendStsinResponse),"调拨入库单");
+
         return sendStsinResponse;
     }
 
