@@ -208,4 +208,11 @@ public class JdSaleServiceImpl implements JdSaleService {
 
 
     }
+
+    @Override
+    public List<JdSale> selectOrderByStatus() {
+
+       List<Order> orders =  orderMapper.findOrderListByStatus();
+        return null;
+    }
 }

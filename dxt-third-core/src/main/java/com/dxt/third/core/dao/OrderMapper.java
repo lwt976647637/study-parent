@@ -3,6 +3,8 @@ package com.dxt.third.core.dao;
 import com.dxt.third.core.entity.Order;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface OrderMapper {
 
@@ -15,4 +17,10 @@ public interface OrderMapper {
      * @param order
      */
     void updateStatusByOrderId(Order order);
+
+    /**
+     * 获取销售单未成功生成的订单数据
+     * @return
+     */
+    List<Order> findOrderListByStatus();
 }

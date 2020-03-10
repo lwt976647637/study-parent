@@ -55,6 +55,11 @@
   </select>
 
 
+  <select id="findOrderListByStatus">
+
+
+  </select>
+
   <update id="updateStatusByOrderId" parameterType="com.dxt.third.core.entity.Order" >
       update t_dxt_sale_order
       <set>
