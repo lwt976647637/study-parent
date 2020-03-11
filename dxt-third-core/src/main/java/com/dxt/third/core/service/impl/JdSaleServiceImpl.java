@@ -200,8 +200,9 @@ public class JdSaleServiceImpl implements JdSaleService {
                 }
             }
             //4、生成销售订单
-            eSaleOrderClient.sendESaleOrder(order,map,jdStore);
-
+            if(StringUtils.isEmpty(order.getSaleId())){
+                eSaleOrderClient.sendESaleOrder(order,map,jdStore);
+            }
 
         }catch (Exception e){
             e.printStackTrace();
