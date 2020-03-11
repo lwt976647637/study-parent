@@ -2,6 +2,7 @@ package com.dxt.third.task.job;
 
 
 import com.dxt.third.core.entity.JdSale;
+import com.dxt.third.core.entity.Order;
 import com.dxt.third.core.service.JdSaleService;
 import com.dxt.third.core.utils.DateUtils;
 import lombok.SneakyThrows;
@@ -38,7 +39,7 @@ public class SyncCreateOrderJob implements SchedulingConfigurer {
 
     public SyncCreateOrderJob() {
         // 每10分钟进行PS数据的同步
-        cron = "0/30 * * * * ?";
+        cron = "0 0/5 * * * ?";
     }
 
     @Override
@@ -48,12 +49,11 @@ public class SyncCreateOrderJob implements SchedulingConfigurer {
             @Override
             public void run() {
                 logger.info("同步京东履约销售列表信息～开始");
-                List<JdSale> jdSales = jdSaleService.selectJdSaleListByStatus();
-                logger.info("等待同步履约订单数量:"+jdSales.size());
-                for (JdSale jdSale : jdSales) {
+                List<String> orderNos = jdSaleService.selectOrderByStatus();
+                logger.info("等待同步履约订单数量:"+orderNos.size());
+                for (String  orderNo : orderNos) {
                     try {
-                        jdSaleService.saveJdSale(jdSale);
-
+                        jdSaleService.orderProcess(orderNo);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

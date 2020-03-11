@@ -36,5 +36,7 @@ public interface JdSaleService {
      * 同步京东履约订单数据进行单据生成
      * @return
      */
-    List<JdSale> selectOrderByStatus();
+    List<String> selectOrderByStatus();
+
+
 }

@@ -55,9 +55,11 @@
   </select>
 
 
-  <select id="findOrderListByStatus">
-
-
+  <select id="findOrderListByStatus" resultType="java.lang.String">
+    select top 500 order_no AS orderNo
+    from t_dxt_sale_order
+    where status is null
+    order by create_time desc
   </select>
 
   <update id="updateStatusByOrderId" parameterType="com.dxt.third.core.entity.Order" >
@@ -82,6 +84,16 @@
         <if test="stsinRemark != null">
           stsin_remark = #{stsinRemark},
         </if>
+        <if test="saleId != null">
+          sale_id = #{saleId},
+        </if>
+        <if test="remark != null">
+          remark = #{remark},
+        </if>
+        <if test="status != null">
+          status = #{status},
+        </if>
+
       </set>
       where order_no = #{orderNo}
   </update>

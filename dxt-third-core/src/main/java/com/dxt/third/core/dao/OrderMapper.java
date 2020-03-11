@@ -22,5 +22,5 @@ public interface OrderMapper {
      * 获取销售单未成功生成的订单数据
      * @return
      */
-    List<Order> findOrderListByStatus();
+    List<String> findOrderListByStatus();
 }

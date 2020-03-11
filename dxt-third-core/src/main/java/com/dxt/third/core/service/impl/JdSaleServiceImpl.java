@@ -14,6 +14,7 @@ import com.dxt.third.core.esale.SendStsoutResponse;
 import com.dxt.third.core.service.JdSaleService;
 import com.dxt.third.core.utils.ESaleConstants;
 import com.dxt.third.core.utils.StringUtils;
+import com.sun.org.apache.xpath.internal.operations.Or;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -210,9 +211,7 @@ public class JdSaleServiceImpl implements JdSaleService {
     }
 
     @Override
-    public List<JdSale> selectOrderByStatus() {
-
-       List<Order> orders =  orderMapper.findOrderListByStatus();
-        return null;
+    public List<String> selectOrderByStatus() {
+        return  orderMapper.findOrderListByStatus();
     }
 }
