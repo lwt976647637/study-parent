@@ -39,7 +39,7 @@ public class SyncCreateOrderJob implements SchedulingConfigurer {
 
     public SyncCreateOrderJob() {
         // 每10分钟进行PS数据的同步
-        cron = "0 0/5 * * * ?";
+        cron = "0 0/3 * * * ?";
     }
 
     @Override
@@ -50,8 +50,8 @@ public class SyncCreateOrderJob implements SchedulingConfigurer {
             public void run() {
                 logger.info("同步京东履约销售列表信息～开始");
                 List<String> orderNos = jdSaleService.selectOrderByStatus();
-                logger.info("等待同步履约订单数量:"+orderNos.size());
-                for (String  orderNo : orderNos) {
+                logger.info("等待同步履约订单数量:" + orderNos.size());
+                for (String orderNo : orderNos) {
                     try {
                         jdSaleService.orderProcess(orderNo);
                     } catch (Exception e) {

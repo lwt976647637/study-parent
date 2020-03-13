@@ -44,7 +44,7 @@ public class SyncJdSaleJob implements SchedulingConfigurer {
 
     public SyncJdSaleJob() {
         // 每10分钟进行PS数据的同步
-        cron = "0/30 * * * * ?";
+        cron = "0 0/5 * * * ?";
     }
 
     @Override
