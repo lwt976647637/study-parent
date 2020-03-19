@@ -25,6 +25,7 @@ public class InterfaceLogServiceImpl implements InterfaceLogService {
     @Override
     public void saveOrderRecord(String orderNo, String requestMessage, String responseMessage, String name) {
         InterfaceLog interfaceLog = new InterfaceLog();
+        interfaceLog.setOrderNo(orderNo);
         interfaceLog.setServerName(name);
         interfaceLog.setCreateTime(new Date());
         interfaceLog.setUpdateTime(new Date());

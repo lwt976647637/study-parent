@@ -172,10 +172,11 @@ public class JdSaleServiceImpl implements JdSaleService {
             JdStore jdStore = jdStores.get(0);
             //1.生成销退订单
             eSaleOrderClient.pinBackOrder(order, jdStore);
-
-            //2、生成调拨出库单
-            eSaleOrderClient.createStsoutOrder(order, map, jdStore);
-            //3、生成调拨入库单
+            if(StringUtils.isEmpty(order.getStsoutSaleId())){
+                //2、生成调拨出库单
+                eSaleOrderClient.createStsoutOrder(order, map, jdStore);
+            }
+           //3、生成调拨入库单
             //调拨出库单已形成,开始形成调拨入库单
             //封装请求参数
             if (StringUtils.isEmpty(order.getStsinStatus())

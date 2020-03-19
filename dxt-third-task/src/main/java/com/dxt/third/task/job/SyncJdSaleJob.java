@@ -2,9 +2,6 @@ package com.dxt.third.task.job;
 
 
 import com.dxt.third.core.entity.JdSale;
-import com.dxt.third.core.entity.JdSaleExample;
-import com.dxt.third.core.entity.Order;
-import com.dxt.third.core.entity.Product;
 import com.dxt.third.core.service.JdSaleService;
 import com.dxt.third.core.utils.DateUtils;
 import lombok.SneakyThrows;
@@ -19,9 +16,6 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -55,10 +49,9 @@ public class SyncJdSaleJob implements SchedulingConfigurer {
             public void run() {
                 logger.info("同步京东履约销售列表信息～开始");
                 Date endDate = DateUtils.dateFormatToDate(new Date());
-                //        Date beginDate = DateUtils.dateAddMonths(endDate, -1);
-                Date beginDate = DateUtils.dateAddYears(endDate, -1);
+                Date beginDate = DateUtils.dateAddMonths(endDate, -1);
                 List<JdSale> jdSales = jdSaleService.selectJdSaleList(beginDate, endDate);
-                logger.info("等待同步履约订单数量:"+jdSales.size());
+                logger.info("等待同步履约订单数量:" + jdSales.size());
                 for (JdSale jdSale : jdSales) {
                     try {
                         jdSaleService.saveJdSale(jdSale);
