@@ -162,6 +162,7 @@ public class JdSaleServiceImpl implements JdSaleService {
                 return;
             }
             order.setProductList(products);
+            order.setShopAssistant(ESaleConstants.ESALE_DXYP_USER_INFO);
             //获取当前门店信息
             JdStoreExample jdStoreExample = new JdStoreExample();
             jdStoreExample.createCriteria().andGtinvidEqualTo(order.getOrgId());

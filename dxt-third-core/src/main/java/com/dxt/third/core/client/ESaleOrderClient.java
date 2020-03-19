@@ -108,7 +108,7 @@ public class ESaleOrderClient {
         sendOrderRequest.setStore(Integer.valueOf(order.getStoreId()));
         sendOrderRequest.setFlag("9");
         sendOrderRequest.setUser(ESaleConstants.ESALE_DXYP_USER_INFO);
-        sendOrderRequest.setUser1(order.getShopAssistant());
+        sendOrderRequest.setUser1(ESaleConstants.ESALE_DXYP_USER_INFO);
         sendOrderRequest.setMobile(order.getMobile());
         sendOrderRequest.setTotalAmount(order.getTotalAmount());
         sendOrderRequest.setPayType(order.getPayType());
@@ -470,7 +470,7 @@ public class ESaleOrderClient {
         sendOrderRequest.setStore(store);
         sendOrderRequest.setFlag("9");
         sendOrderRequest.setUser(ESaleConstants.ESALE_DXYP_USER_INFO);
-        sendOrderRequest.setUser1(order.getShopAssistant());
+        sendOrderRequest.setUser1(ESaleConstants.ESALE_DXYP_USER_INFO);
         sendOrderRequest.setMobile(order.getMobile());
         sendOrderRequest.setTotalAmount(order.getTotalAmount());
         sendOrderRequest.setPayType(order.getPayType());
