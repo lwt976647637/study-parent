@@ -126,10 +126,9 @@ public class JdSaleServiceImpl implements JdSaleService {
     }
 
 
-
     @Override
     public List<JdSale> selectJdSaleList(Date beginDate, Date endDate) {
-        return jdSaleMapper.selectJdSaleList(beginDate,endDate);
+        return jdSaleMapper.selectJdSaleList(beginDate, endDate);
     }
 
     @Override
@@ -148,16 +147,16 @@ public class JdSaleServiceImpl implements JdSaleService {
         try {
             SendStsinRequest sendStsinRequest;
             SendStsinResponse sendStsinResponse;
-            Map<String,Object> map = new HashMap<>(10);
+            Map<String, Object> map = new HashMap<>(10);
             //获取订单详情
             Order order = orderMapper.findOrderByNo(orderNo);
-            if(order==null){
-                logger.info("当前订单不存在{}",orderNo);
+            if (order == null) {
+                logger.info("当前订单不存在{}", orderNo);
                 return;
             }
 
             List<Product> products = productMapper.findProductList(order.getOrderNo());
-            if(products==null){
+            if (products == null) {
                 logger.info("商品列表不存在");
                 return;
             }
@@ -167,46 +166,25 @@ public class JdSaleServiceImpl implements JdSaleService {
             JdStoreExample jdStoreExample = new JdStoreExample();
             jdStoreExample.createCriteria().andGtinvidEqualTo(order.getOrgId());
             List<JdStore> jdStores = jdStoreMapper.selectByExample(jdStoreExample);
-            if(jdStores.isEmpty()){
-                return ;
+            if (jdStores.isEmpty()) {
+                return;
             }
             JdStore jdStore = jdStores.get(0);
             //1.生成销退订单
             eSaleOrderClient.pinBackOrder(order, jdStore);
-            if(StringUtils.isEmpty(order.getStsoutSaleId())){
+            if (StringUtils.isEmpty(order.getStsoutSaleId())) {
                 //2、生成调拨出库单
                 eSaleOrderClient.createStsoutOrder(order, map, jdStore);
             }
-           //3、生成调拨入库单
+            //3、生成调拨入库单
             //调拨出库单已形成,开始形成调拨入库单
-            //封装请求参数
-            if (StringUtils.isEmpty(order.getStsinStatus())
-                    && ("1".equals(order.getStsoutStatus())
-                    || "2".equals(order.getStsoutStatus()))
-                    && StringUtils.isNotEmpty(order.getStsoutSaleId())) {
-                sendStsinRequest = new SendStsinRequest();
-                sendStsinRequest.setStoretostoreid(order.getStsoutSaleId().trim());
-                sendStsinRequest.setStstype(0);
-                sendStsinRequest.setUsername(ESaleConstants.ESALE_DXYP_USER_INFO);
-                //调拨入库单账套以对方门店账套为主
-                sendStsinRequest.setAccountid(Integer.valueOf(jdStore.getGtaccountid().trim()));
-                sendStsinRequest.setStsid(0);
-                sendStsinResponse = eSaleOrderClient.sendESaletSinInfo(sendStsinRequest, map, jdStore.getGtdepotid().trim());
-                if (null != sendStsinResponse) {
-                    order.setStsinStatus(String.valueOf(sendStsinResponse.getResult()));
-                    order.setStsinSaleId(sendStsinResponse.getStsid());
-                    order.setStsinRemark(sendStsinResponse.getDesc());
-                    order.setUpdateTime(new Date());
-                    //将更新调拨入库单状态
-                    orderMapper.updateStatusByOrderId(order);
-                }
-            }
+            createStsinOrder(map, order, jdStore);
             //4、生成销售订单
-            if(StringUtils.isEmpty(order.getSaleId())){
-                eSaleOrderClient.sendESaleOrder(order,map,jdStore);
+            if (StringUtils.isEmpty(order.getSaleId())) {
+                eSaleOrderClient.sendESaleOrder(order, map, jdStore);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -215,6 +193,113 @@ public class JdSaleServiceImpl implements JdSaleService {
 
     @Override
     public List<String> selectOrderByStatus() {
-        return  orderMapper.findOrderListByStatus();
+        return orderMapper.findOrderListByStatus();
+    }
+
+    @Override
+    /**
+     * 生成调拨入库单
+     */
+    public void orderStsinProcess(String orderNo) {
+        Map<String, Object> map = new HashMap<>(10);
+
+        //获取订单详情
+        Order order = orderMapper.findOrderByNo(orderNo);
+        List<Product> products = productMapper.findProductList(order.getOrderNo());
+        order.setProductList(products);
+        order.setShopAssistant(ESaleConstants.ESALE_DXYP_USER_INFO);
+        //获取当前门店信息
+        JdStoreExample jdStoreExample = new JdStoreExample();
+        jdStoreExample.createCriteria().andGtinvidEqualTo(order.getOrgId());
+        List<JdStore> jdStores = jdStoreMapper.selectByExample(jdStoreExample);
+        if (jdStores.isEmpty()) {
+            return;
+        }
+        JdStore jdStore = jdStores.get(0);
+        createStsinOrder(map, order, jdStore);
+    }
+
+    @Override
+    /**
+     * 生成调拨出库单
+     */
+    public void orderStsoutProcess(String orderNo) {
+        Map<String, Object> map = new HashMap<>(10);
+        //获取订单详情
+        Order order = orderMapper.findOrderByNo(orderNo);
+        List<Product> products = productMapper.findProductList(order.getOrderNo());
+        if (products == null) {
+            logger.info("商品列表不存在");
+            return;
+        }
+
+        order.setProductList(products);
+        order.setShopAssistant(ESaleConstants.ESALE_DXYP_USER_INFO);
+        //获取当前门店信息
+        JdStoreExample jdStoreExample = new JdStoreExample();
+        jdStoreExample.createCriteria().andGtinvidEqualTo(order.getOrgId());
+        List<JdStore> jdStores = jdStoreMapper.selectByExample(jdStoreExample);
+        if (jdStores.isEmpty()) {
+            return;
+        }
+        JdStore jdStore = jdStores.get(0);
+        if (StringUtils.isEmpty(order.getStsoutSaleId()) || order.getStsoutSaleId().equals("0")) {
+            //2、生成调拨出库单
+            eSaleOrderClient.createStsoutOrder(order, map, jdStore);
+        }
+    }
+
+    @Override
+    public void orderESaleProcess(String orderNo) throws Exception {
+        Map<String, Object> map = new HashMap<>(10);
+        //获取订单详情
+        Order order = orderMapper.findOrderByNo(orderNo);
+        List<Product> products = productMapper.findProductList(order.getOrderNo());
+        if (products == null) {
+            logger.info("商品列表不存在");
+            return;
+        }
+
+        order.setProductList(products);
+        order.setShopAssistant(ESaleConstants.ESALE_DXYP_USER_INFO);
+        //获取当前门店信息
+        JdStoreExample jdStoreExample = new JdStoreExample();
+        jdStoreExample.createCriteria().andGtinvidEqualTo(order.getOrgId());
+        List<JdStore> jdStores = jdStoreMapper.selectByExample(jdStoreExample);
+        if (jdStores.isEmpty()) {
+            return;
+        }
+        JdStore jdStore = jdStores.get(0);
+
+        if (StringUtils.isEmpty(order.getSaleId()) || order.getSaleId().equals("0")) {
+            eSaleOrderClient.sendESaleOrder(order, map, jdStore);
+        }
+    }
+
+    private void createStsinOrder(Map<String, Object> map, Order order, JdStore jdStore) {
+        SendStsinRequest sendStsinRequest;
+        SendStsinResponse sendStsinResponse;
+        boolean flag = (StringUtils.isEmpty(order.getStsinStatus()) || order.getStsinStatus().equals("0"))
+                && ("1".equals(order.getStsoutStatus())
+                || "2".equals(order.getStsoutStatus()))
+                && StringUtils.isNotEmpty(order.getStsoutSaleId());
+        if (flag) {
+            sendStsinRequest = new SendStsinRequest();
+            sendStsinRequest.setStoretostoreid(order.getStsoutSaleId().trim());
+            sendStsinRequest.setStstype(0);
+            sendStsinRequest.setUsername(ESaleConstants.ESALE_DXYP_USER_INFO);
+            //调拨入库单账套以对方门店账套为主
+            sendStsinRequest.setAccountid(Integer.valueOf(jdStore.getGtaccountid().trim()));
+            sendStsinRequest.setStsid(0);
+            sendStsinResponse = eSaleOrderClient.sendESaletSinInfo(sendStsinRequest, map, jdStore.getGtdepotid().trim());
+            if (null != sendStsinResponse) {
+                order.setStsinStatus(String.valueOf(sendStsinResponse.getResult()));
+                order.setStsinSaleId(sendStsinResponse.getStsid());
+                order.setStsinRemark(sendStsinResponse.getDesc());
+                order.setUpdateTime(new Date());
+                //将更新调拨入库单状态
+                orderMapper.updateStatusByOrderId(order);
+            }
+        }
     }
 }

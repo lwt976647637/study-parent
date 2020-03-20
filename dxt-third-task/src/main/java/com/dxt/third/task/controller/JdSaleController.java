@@ -21,4 +21,32 @@ public class JdSaleController {
     public void createESaleOrder(@PathVariable("orderNo") String orderNo) {
         jdSaleService.orderProcess(orderNo);
     }
+
+    /**
+     * 调拨入库单生成
+     */
+    @RequestMapping(value = "/orderStsinProcess/{orderNo}", method = RequestMethod.GET)
+    public void orderStsinProcess(@PathVariable("orderNo") String orderNo) {
+        jdSaleService.orderStsinProcess(orderNo);
+    }
+
+    /**
+     * 调拨出库单生成
+     */
+    @RequestMapping(value = "/orderStsoutProcess/{orderNo}", method = RequestMethod.GET)
+    public void orderStsoutProcess(@PathVariable("orderNo") String orderNo) {
+        jdSaleService.orderStsoutProcess(orderNo);
+    }
+
+    /**
+     * 销售订单
+     */
+    @RequestMapping(value = "/orderESaleProcess/{orderNo}", method = RequestMethod.GET)
+    public void orderESaleProcess(@PathVariable("orderNo") String orderNo) {
+        try {
+            jdSaleService.orderESaleProcess(orderNo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

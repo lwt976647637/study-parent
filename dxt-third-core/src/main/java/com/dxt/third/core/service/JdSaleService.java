@@ -38,5 +38,21 @@ public interface JdSaleService {
      */
     List<String> selectOrderByStatus();
 
+    /**
+     * 生成调拨入库单
+     * @param orderNo
+     */
+    void orderStsinProcess(String orderNo);
 
+    /**
+     * 生成调拨出库单
+     * @param orderNo
+     */
+    void orderStsoutProcess(String orderNo);
+
+    /**
+     * 生成销售订单
+     * @param orderNo
+     */
+    void orderESaleProcess(String orderNo) throws Exception;
 }
