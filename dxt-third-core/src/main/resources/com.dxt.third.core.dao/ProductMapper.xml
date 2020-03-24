@@ -34,7 +34,7 @@
 
 
     <select id="findProudctSerial" resultType="java.lang.String">
-    select ProductSerial from storeserial_one where billid = #{orderNo}  and InsertSerial = #{insertSerial}
+    select ProductSerial from storeserialdetail where billid = #{orderNo}  and InsertSerial = #{insertSerial}
   </select>
 
     <select id="findProductList"  parameterType="java.lang.String" resultMap="BaseResultMap">
