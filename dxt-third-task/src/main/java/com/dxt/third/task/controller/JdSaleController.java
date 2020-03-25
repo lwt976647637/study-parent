@@ -53,7 +53,8 @@ public class JdSaleController {
     /**
      * 更新商品串号
      */
-    public void updateProduct(String orderNo){
+    @RequestMapping(value = "/updateProduct/{orderNo}", method = RequestMethod.GET)
+    public void updateProduct(@PathVariable("orderNo") String orderNo){
         try {
             jdSaleService.updateProduct(orderNo);
         } catch (Exception e) {

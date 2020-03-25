@@ -99,7 +99,7 @@ public class JdSaleServiceImpl implements JdSaleService {
                 double productPrice = saleDetail.getProductprice().doubleValue();
                 int productNumber = saleDetail.getProductnumber().intValue();
                 product.setProductPrice(String.valueOf(productPrice));
-                String proudctSerial = productMapper.findProudctSerial(String.valueOf(saleDetail.getSaleid()), saleDetail.getInsertserial());
+                String proudctSerial = productMapper.findProudctSerial(String.valueOf(saleDetail.getSaleid()), saleDetail.getProductid(), saleDetail.getInsertserial());
                 logger.info("查询商品串号信息:" + proudctSerial);
                 product.setProductSerial(StringUtils.isNotEmpty(proudctSerial) ? proudctSerial : "");
                 product.setRemark(saleDetail.getMainmemo());
@@ -172,7 +172,7 @@ public class JdSaleServiceImpl implements JdSaleService {
             JdStore jdStore = jdStores.get(0);
             //1.生成销退订单
             eSaleOrderClient.pinBackOrder(order, jdStore);
-            if (StringUtils.isEmpty(order.getStsoutSaleId())) {
+            if (StringUtils.isEmpty(order.getStsoutSaleId()) || order.getStsoutStatus().equals("0")) {
                 //2、生成调拨出库单
                 eSaleOrderClient.createStsoutOrder(order, map, jdStore);
             }
@@ -180,7 +180,7 @@ public class JdSaleServiceImpl implements JdSaleService {
             //调拨出库单已形成,开始形成调拨入库单
             createStsinOrder(map, order, jdStore);
             //4、生成销售订单
-            if (StringUtils.isEmpty(order.getSaleId())) {
+            if (StringUtils.isEmpty(order.getSaleId()) || order.getStatus().equals("0")) {
                 eSaleOrderClient.sendESaleOrder(order, map, jdStore);
             }
 
@@ -288,10 +288,11 @@ public class JdSaleServiceImpl implements JdSaleService {
         for (JdSale jdSaleDetail : jdSaleDetails) {
             Product product = productMapper.findProductById(orderNo, jdSaleDetail.getProductid());
             //获取串号
-            String proudctSerial = productMapper.findProudctSerial(String.valueOf(jdSaleDetail.getSaleid()), jdSaleDetail.getInsertserial());
-            if(StringUtils.isEmpty(product.getProductSerial()) && StringUtils.isNotEmpty(proudctSerial)){
+            String proudctSerial = productMapper.findProudctSerial(String.valueOf(jdSaleDetail.getSaleid()), jdSaleDetail.getProductid(), jdSaleDetail.getInsertserial());
+            if (StringUtils.isEmpty(product.getProductSerial()) && StringUtils.isNotEmpty(proudctSerial)) {
                 //更新商品串号信息
                 product.setProductSerial(proudctSerial);
+                product.setOrderNo(orderNo);
                 productMapper.updateProductSerial(product);
 
             }

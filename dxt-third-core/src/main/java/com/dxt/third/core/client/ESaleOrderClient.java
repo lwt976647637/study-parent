@@ -241,7 +241,7 @@ public class ESaleOrderClient {
         PinBackOrderExample pinBackOrderExample = new PinBackOrderExample();
         pinBackOrderExample.createCriteria().andOrderNoEqualTo(order.getOrderNo());
         List<PinBackOrder> pinBackOrders = pinBackOrderMapper.selectByExample(pinBackOrderExample);
-        if (!pinBackOrders.isEmpty()) {
+        if (!pinBackOrders.isEmpty() && !pinBackOrders.get(0).getStatus().equals("")) {
             return sendOrderResponse;
         }
         logger.info("pinBackEsaleChargeOrder~~~~~~~~~~形成销退单据开始=======START");
