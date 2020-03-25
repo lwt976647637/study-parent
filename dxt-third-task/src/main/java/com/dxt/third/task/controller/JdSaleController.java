@@ -49,4 +49,15 @@ public class JdSaleController {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 更新商品串号
+     */
+    public void updateProduct(String orderNo){
+        try {
+            jdSaleService.updateProduct(orderNo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

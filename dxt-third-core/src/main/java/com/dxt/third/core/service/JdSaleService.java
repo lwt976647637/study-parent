@@ -55,4 +55,10 @@ public interface JdSaleService {
      * @param orderNo
      */
     void orderESaleProcess(String orderNo) throws Exception;
+
+    /**
+     * 更新商品详细信息
+     * @param orderNo
+     */
+    void updateProduct(String orderNo);
 }

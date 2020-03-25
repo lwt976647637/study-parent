@@ -276,6 +276,30 @@ public class JdSaleServiceImpl implements JdSaleService {
         }
     }
 
+    @Override
+    /**
+     * 更新商品详细信息
+     */
+    public void updateProduct(String orderNo) {
+        JdSaleExample example = new JdSaleExample();
+        example.createCriteria().andSaleidEqualTo(Long.valueOf(orderNo));
+        //获取订单的详细信息
+        List<JdSale> jdSaleDetails = jdSaleMapper.selectByExample(example);
+        for (JdSale jdSaleDetail : jdSaleDetails) {
+            Product product = productMapper.findProductById(orderNo, jdSaleDetail.getProductid());
+            //获取串号
+            String proudctSerial = productMapper.findProudctSerial(String.valueOf(jdSaleDetail.getSaleid()), jdSaleDetail.getInsertserial());
+            if(StringUtils.isEmpty(product.getProductSerial()) && StringUtils.isNotEmpty(proudctSerial)){
+                //更新商品串号信息
+                product.setProductSerial(proudctSerial);
+                productMapper.updateProductSerial(product);
+
+            }
+
+        }
+
+    }
+
     private void createStsinOrder(Map<String, Object> map, Order order, JdStore jdStore) {
         SendStsinRequest sendStsinRequest;
         SendStsinResponse sendStsinResponse;

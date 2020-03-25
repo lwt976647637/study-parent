@@ -21,25 +21,41 @@
     remark, create_time, update_time
   </sql>
 
-    <insert id="insert" parameterType="com.dxt.third.core.entity.Product">
-    insert into t_dxt_sale_product (id, order_no, product_id, 
-      product_name, product_price, product_serial, 
-      product_number, remark, create_time, 
-      update_time)
-    values (#{id}, #{orderNo}, #{productId}, 
-      #{productName}, #{productPrice}, #{productSerial}, 
-      #{productNumber}, #{remark}, #{createTime},
-      #{updateTime})
-  </insert>
-
 
     <select id="findProudctSerial" resultType="java.lang.String">
     select ProductSerial from storeserialdetail where billid = #{orderNo}  and InsertSerial = #{insertSerial}
   </select>
 
-    <select id="findProductList"  parameterType="java.lang.String" resultMap="BaseResultMap">
-      select <include refid="Base_Column_List"/>
-      from t_dxt_sale_product
-      where order_no = #{orderNo}
+    <select id="findProductList" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_dxt_sale_product
+        where order_no = #{orderNo}
     </select>
+    <select id="findProductById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_dxt_sale_product
+        where order_no = #{orderNo} and product_id = #{productId}
+    </select>
+
+
+    <insert id="insert" parameterType="com.dxt.third.core.entity.Product">
+        insert into t_dxt_sale_product (id, order_no, product_id,
+          product_name, product_price, product_serial,
+          product_number, remark, create_time,
+          update_time)
+        values (#{id}, #{orderNo}, #{productId},
+          #{productName}, #{productPrice}, #{productSerial},
+          #{productNumber}, #{remark}, #{createTime},
+          #{updateTime})
+  </insert>
+
+    <update id="updateProductSerial">
+        update t_dxt_sale_product
+        set product_serial =  #{productSerial}
+        where order_no = #{orderNo} and product_id = #{productId}
+    </update>
+
+
 </mapper>

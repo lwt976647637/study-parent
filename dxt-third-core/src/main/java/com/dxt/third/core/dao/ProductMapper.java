@@ -24,4 +24,18 @@ public interface ProductMapper {
      * @return
      */
     List<Product> findProductList(String orderNo);
+
+    /**
+     * 获取商品详细信息
+     * @param orderNo
+     * @param productId
+     * @return
+     */
+    Product findProductById(@Param("orderNo") String orderNo, @Param("productId") String productId);
+
+    /**
+     * 更新商品信息
+     * @param product
+     */
+    void updateProductSerial(Product product);
 }
