@@ -289,7 +289,7 @@ public class JdSaleServiceImpl implements JdSaleService {
             Product product = productMapper.findProductById(orderNo, jdSaleDetail.getProductid());
             //获取串号
             String proudctSerial = productMapper.findProudctSerial(String.valueOf(jdSaleDetail.getSaleid()), jdSaleDetail.getProductid(), jdSaleDetail.getInsertserial());
-            if (StringUtils.isEmpty(product.getProductSerial()) && StringUtils.isNotEmpty(proudctSerial)) {
+            if ( StringUtils.isNotEmpty(proudctSerial)) {
                 //更新商品串号信息
                 product.setProductSerial(proudctSerial);
                 product.setOrderNo(orderNo);
