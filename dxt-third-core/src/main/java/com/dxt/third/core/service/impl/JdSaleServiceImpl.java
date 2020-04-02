@@ -100,8 +100,9 @@ public class JdSaleServiceImpl implements JdSaleService {
                 int productNumber = saleDetail.getProductnumber().intValue();
                 product.setProductPrice(String.valueOf(productPrice));
                 String proudctSerial = productMapper.findProudctSerial(String.valueOf(saleDetail.getSaleid()), saleDetail.getProductid(), saleDetail.getInsertserial());
-                logger.info("查询商品串号信息:" + proudctSerial);
-                product.setProductSerial(StringUtils.isNotEmpty(proudctSerial) ? proudctSerial : "");
+                String format =  proudctSerial.replaceAll("\r","").replaceAll("\n","");
+                logger.info("查询商品串号信息:" + format);
+                product.setProductSerial(StringUtils.isNotEmpty(format) ? format : "");
                 product.setRemark(saleDetail.getMainmemo());
                 product.setProductNumber(productNumber);
                 //计算总金额
@@ -327,4 +328,7 @@ public class JdSaleServiceImpl implements JdSaleService {
             }
         }
     }
+
+
+
 }
