@@ -17,6 +17,7 @@
     <modules>
         <module>study-core</module>
         <module>study-rest</module>
+        <module>study-task</module>
     </modules>
 
     <properties>
