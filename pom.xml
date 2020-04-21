@@ -3,23 +3,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dxt</groupId>
-        <artifactId>dxt-parent</artifactId>
-        <version>1.0.0</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.5.RELEASE</version>
     </parent>
-    <groupId>com.dxt</groupId>
-    <artifactId>dxt-third-parent</artifactId>
+    <groupId>com.lwt</groupId>
+    <artifactId>study-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>dxt-third-parent</name>
-    <description>第三方对接项目</description>
+    <name>study-parent</name>
+    <description>学习项目</description>
     <packaging>pom</packaging>
 
     <modules>
-        <module>dxt-third-core</module>
-        <module>dxt-third-provider</module>
-        <module>dxt-third-remote</module>
-        <module>dxt-third-rest</module>
-        <module>dxt-third-task</module>
+        <module>study-core</module>
+        <module>study-rest</module>
     </modules>
 
     <properties>
@@ -55,24 +52,6 @@
 
 
     </dependencies>
-    <distributionManagement>
-        <repository>
-            <id>maven-releases</id>
-            <name>Nexus Release Repository</name>
-            <url>http://192.168.100.147:8081/repository/maven-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>maven-snapshots</id>
-            <name>Nexus Snapshot Repository</name>
-            <url>http://192.168.100.147:8081/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-    <repositories>
-        <repository>
-            <id>maven-public</id>
-            <url>http://192.168.100.147:8081/repository/maven-public/</url>
-        </repository>
-    </repositories>
 
 
     <build>
