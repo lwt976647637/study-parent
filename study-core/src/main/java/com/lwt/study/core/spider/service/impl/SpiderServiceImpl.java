@@ -20,7 +20,8 @@ import java.net.URLConnection;
 public class SpiderServiceImpl implements SpiderService {
     private static final Logger logger = LoggerFactory.getLogger(SpiderServiceImpl.class);
 
-    private static final String FILE_PATH = "/home/meme/";
+    private static final String FILE_PATH_MEME = "/home/meme/";
+    private static final String FILE_PATH_VIDEO = "/home/video/";
 
 
     @Override
@@ -67,7 +68,7 @@ public class SpiderServiceImpl implements SpiderService {
             for (Element element : elements) {
                 String memeLink = element.attr("href");
                 String memeTitle = element.attr("title");
-                String filePath = FILE_PATH +categoryText+"/"+ memeTitle + "/";
+                String filePath = FILE_PATH_MEME + categoryText + "/" + memeTitle + "/";
                 Document doc = Jsoup.connect(memeLink)
                         .header("Accept", "*/*")
                         .header("Accept-Encoding", "gzip, deflate, br")
@@ -126,7 +127,74 @@ public class SpiderServiceImpl implements SpiderService {
                 .header("Host", "222.223.235.164:8090")
                 .header("User-Agent", randomAgent)
                 .timeout(100000).get();
+
         System.out.println(document.toString());
+
+    }
+
+    @Override
+    public void downloadDyttVideo(String url) throws IOException {
+        String[] userAgent = {
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/14.0.835.163 Safari/535.1",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36",
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11",
+                "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0",
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
+                "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50",
+                "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50",
+                "Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; en) Presto/2.8.131 Version/11.11",
+                "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko",
+                "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; SE 2.X MetaSr 1.0; SE 2.X MetaSr 1.0; .NET CLR 2.0.50727; SE 2.X MetaSr 1.0)",
+                "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; 360SE)"
+        };
+        String randomAgent = userAgent[threadSleep("1-11")];
+        Document document = Jsoup.connect(url)
+                .header("Accept", "*/*")
+                .header("Accept-Encoding", "gzip, deflate, br")
+                .header("Accept-Language", "zh-CN,zh;q=0.9")
+                .header("Content-Type", "application/json;charset=UTF-8")
+                .header("Host", "222.223.235.164:8090")
+                .header("User-Agent", randomAgent)
+                .timeout(100000).get();
+
+        System.out.println(document.toString());
+
+    }
+
+    /**
+     * 根据视频连接详情进行下载
+     *
+     * @param detailUrl
+     * @param randomAgent
+     * @throws IOException
+     */
+    private void downloadDetailVideoByUrl(String detailUrl, String randomAgent) throws IOException {
+
+        Document document = Jsoup.connect(detailUrl)
+                .header("Accept", "*/*")
+                .header("Accept-Encoding", "gzip, deflate, br")
+                .header("Accept-Language", "zh-CN,zh;q=0.9")
+                .header("Content-Type", "application/json;charset=UTF-8")
+                .header("Host", "222.223.235.164:8090")
+                .header("User-Agent", randomAgent)
+                .timeout(100000).get();
+        document.select("script[src]").remove();
+        Elements script = document.select("script[type]");
+        String scriptString = script.toString();
+        //获取视频连接地址
+        String href = scriptString.substring(scriptString.lastIndexOf("https"), scriptString.lastIndexOf(".mp4") + 4);
+        //获取视频标题
+        String title = document.select("div.play-hd h1").text();
+        String fileName = FILE_PATH_VIDEO + "/" + title + ".mp4";
+        try {
+            File dir = new File(FILE_PATH_VIDEO);
+            if (!dir.isDirectory()) {
+                dir.mkdirs();
+            }
+            downloadFile(href, fileName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -195,8 +263,6 @@ public class SpiderServiceImpl implements SpiderService {
             while ((size = bin.read(buf)) != -1) {
                 len += size;
                 out.write(buf, 0, size);
-                // 控制台打印文件下载的百分比情况
-                logger.info("下载了-------> " + len * 100 / fileLength);
             }
             // 关闭资源
             bin.close();

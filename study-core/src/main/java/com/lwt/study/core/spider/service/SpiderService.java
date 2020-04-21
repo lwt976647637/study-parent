@@ -18,4 +18,10 @@ public interface SpiderService {
      * @param url
      */
     void downloadfunnyVideo(String url) throws IOException;
+
+    /**
+     * 获取电影天堂电影下载链接
+     * @param url
+     */
+    void downloadDyttVideo(String url) throws IOException;
 }

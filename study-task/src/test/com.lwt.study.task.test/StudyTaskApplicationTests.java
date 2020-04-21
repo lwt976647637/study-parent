@@ -27,7 +27,15 @@ public class StudyTaskApplicationTests {
     @Test
     public void funnyVideo() {
         try {
-            spiderService.downloadfunnyVideo("https://www.gaoxiaovod.com/v/v31164.html");
+            spiderService.downloadfunnyVideo("https://www.gaoxiaovod.com/zt/gaoxiaoshipin");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void funnyDyttVideo() {
+        try {
+            spiderService.downloadDyttVideo("https://www.dytt8.net/html/gndy/index.html");
         } catch (IOException e) {
             e.printStackTrace();
         }
