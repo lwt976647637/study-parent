@@ -15,7 +15,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.UUID;
 
 @Service
 public class SpiderServiceImpl implements SpiderService {
@@ -49,26 +48,85 @@ public class SpiderServiceImpl implements SpiderService {
                 .header("Host", "222.223.235.164:8090")
                 .header("User-Agent", randomAgent)
                 .timeout(100000).get();
+        //第一步拿到所有分类列表的链接地址
+        Elements categorys = document.select("#menu-nav a[href]");
+        for (Element category : categorys) {
+            String categoryLink = category.attr("href");
+            String categoryText = category.text();
+            System.out.println(categoryText);
+            Document categoryDoc = Jsoup.connect(categoryLink)
+                    .header("Accept", "*/*")
+                    .header("Accept-Encoding", "gzip, deflate, br")
+                    .header("Accept-Language", "zh-CN,zh;q=0.9")
+                    .header("Content-Type", "application/json;charset=UTF-8")
+                    .header("Host", "222.223.235.164:8090")
+                    .header("User-Agent", randomAgent)
+                    .timeout(100000).get();
+            //第二步：获取连接地址下的所有表情包组合
+            Elements elements = categoryDoc.select("div.article a[href]");
+            for (Element element : elements) {
+                String memeLink = element.attr("href");
+                String memeTitle = element.attr("title");
+                String filePath = FILE_PATH +categoryText+"/"+ memeTitle + "/";
+                Document doc = Jsoup.connect(memeLink)
+                        .header("Accept", "*/*")
+                        .header("Accept-Encoding", "gzip, deflate, br")
+                        .header("Accept-Language", "zh-CN,zh;q=0.9")
+                        .header("Content-Type", "application/json;charset=UTF-8")
+                        .header("Host", "222.223.235.164:8090")
+                        .header("User-Agent", randomAgent)
+                        .timeout(100000).get();
+                //第三步：获取表情包组合中的所有链接
+                Elements images = doc.select("#post_content img[src]");
+                for (Element image : images) {
 
-        Elements images = document.select("img[src]");
-        for (Element image : images) {
-            String href = image.attr("src");
-            if (href.endsWith(".gif")) {
-                //将表情包保存到本地
-                try {
-                    File dir = new File(FILE_PATH);
-                    if (!dir.isDirectory()) {
-                        dir.mkdirs();
+                    String href = image.attr("src");
+                    String name = href.substring(href.lastIndexOf("/") + 1, href.length());
+                    if (href.endsWith(".gif")) {
+                        //第四步：将表情包保存到本地
+                        try {
+                            File dir = new File(filePath);
+                            if (!dir.isDirectory()) {
+                                dir.mkdirs();
+                            }
+                            String fileName = filePath + name;
+                            downloadFile(href, fileName);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                    String fileName = FILE_PATH + UUID.randomUUID().toString() + ".gif";
-                    downloadFile(href, fileName);
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
 
-
         }
+
+    }
+
+    @Override
+    public void downloadfunnyVideo(String url) throws IOException {
+        String[] userAgent = {
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/14.0.835.163 Safari/535.1",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36",
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11",
+                "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0",
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
+                "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50",
+                "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50",
+                "Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; en) Presto/2.8.131 Version/11.11",
+                "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko",
+                "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; SE 2.X MetaSr 1.0; SE 2.X MetaSr 1.0; .NET CLR 2.0.50727; SE 2.X MetaSr 1.0)",
+                "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; 360SE)"
+        };
+        String randomAgent = userAgent[threadSleep("1-11")];
+        Document document = Jsoup.connect(url)
+                .header("Accept", "*/*")
+                .header("Accept-Encoding", "gzip, deflate, br")
+                .header("Accept-Language", "zh-CN,zh;q=0.9")
+                .header("Content-Type", "application/json;charset=UTF-8")
+                .header("Host", "222.223.235.164:8090")
+                .header("User-Agent", randomAgent)
+                .timeout(100000).get();
+        System.out.println(document.toString());
     }
 
 

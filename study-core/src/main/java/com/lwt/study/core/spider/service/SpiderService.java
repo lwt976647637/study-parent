@@ -13,4 +13,9 @@ public interface SpiderService {
      */
     void getDownloadMeme(String url) throws IOException;
 
+    /**
+     * 爬取搞笑视频
+     * @param url
+     */
+    void downloadfunnyVideo(String url) throws IOException;
 }

@@ -18,11 +18,19 @@ public class StudyTaskApplicationTests {
 	@Test
 	public void contextLoads() {
 		try {
-			spiderService.getDownloadMeme("http://www.bbsnet.com/keaixiaohai.html");
+			spiderService.getDownloadMeme("http://www.bbsnet.com");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
+
+    @Test
+    public void funnyVideo() {
+        try {
+            spiderService.downloadfunnyVideo("https://www.gaoxiaovod.com/v/v31164.html");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
