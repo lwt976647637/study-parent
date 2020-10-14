@@ -18,6 +18,7 @@
         <module>study-core</module>
         <module>study-rest</module>
         <module>study-task</module>
+        <module>study-design</module>
     </modules>
 
     <properties>
