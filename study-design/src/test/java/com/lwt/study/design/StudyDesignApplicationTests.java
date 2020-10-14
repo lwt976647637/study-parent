@@ -1,10 +1,13 @@
 package com.lwt.study.design;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@SpringBootTest
-class StudyDesignApplicationTests {
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = StudyDesignApplication.class)
+public class StudyDesignApplicationTests {
 
 	@Test
 	void contextLoads() {
